@@ -22,6 +22,11 @@ qx.Class.define("sn.boardfarm.backend.power.Servo",
 		pwr.addAdapter(this.getAdapterIdent(), this);
 	},
 
+	events :
+	{
+		"adapterPowerChanged" : "qx.event.type.Data"
+	},
+
 	properties :
 	{
 		adapterIdent : {},
@@ -31,6 +36,12 @@ qx.Class.define("sn.boardfarm.backend.power.Servo",
 
 	members :
 	{
+		adapterReadPower : function()
+		{
+			/* can't read power measurements */
+			this.fireDataEvent("adapterPowerChanged", 0);
+		},
+
 		__states : {},
 
 		adapterReadState : function()

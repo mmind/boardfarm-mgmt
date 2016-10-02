@@ -19,14 +19,58 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
     this.__menuItemStore = {};
 
     // Reload button
-    var reloadBtn = new qx.ui.toolbar.Button(this.tr("Reload"), "icon/22/actions/view-refresh.png");
+/*    var reloadBtn = new qx.ui.toolbar.Button(this.tr("Reload"), "icon/22/actions/view-refresh.png");
     var reloadCmd = controller.getCommand("reload");
     reloadBtn.setCommand(reloadCmd);
     reloadBtn.setToolTipText(this.tr("Reload boards. (%1)", reloadCmd.toString()));
-    this.add(reloadBtn);
+    this.add(reloadBtn);*/
 
-    // Add a spacer to move board handling to the right
-    this.addSpacer();
+	var tempPart = new qx.ui.toolbar.Part;
+	var tempC = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+	var t = new qx.ui.basic.Label("Temperature:");
+	t.set({ alignY : "middle", marginRight : 10 });
+	t.setFont("bold");
+	tempC.add(t);
+	this.__temp = new qx.ui.basic.Label("---");
+	this.__temp.set({ alignY : "middle", textAlign : "right", width : 40 });
+	tempC.add(this.__temp);
+	var t = new qx.ui.basic.Label("°C");
+	t.set({ alignY : "middle", marginLeft : 5 });
+	tempC.add(t);
+	tempPart.add(tempC);
+	this.add(tempPart);
+
+	var powerPart = new qx.ui.toolbar.Part;
+	var powerC = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+	var t = new qx.ui.basic.Label("Power:");
+	t.set({ alignY : "middle", marginRight : 5 });
+	t.setFont("bold");
+	powerC.add(t);
+	this.__power = new qx.ui.basic.Label("---");
+	this.__power.set({ alignY : "middle", textAlign : "right", width : 40 });
+	powerC.add(this.__power);
+	var t = new qx.ui.basic.Label("W");
+	t.set({ alignY : "middle", marginLeft : 10 });
+	powerC.add(t);
+	powerPart.add(powerC);
+	this.add(powerPart);
+
+	var loadPart = new qx.ui.toolbar.Part;
+	var loadC = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+	var t = new qx.ui.basic.Label("Load:");
+	t.set({ alignY : "middle", marginRight : 10 });
+	t.setFont("bold");
+	loadC.add(t);
+	this.__load = new qx.ui.basic.Label("---");
+	this.__load.setAlignY("middle");
+	loadC.add(this.__load);
+	loadPart.add(loadC);
+	this.add(loadPart);
+
+
+
+	// Add a spacer to move board handling to the right
+	this.addSpacer();
 
     var pwronBtn = new qx.ui.toolbar.Button(this.tr("Power On"), "icon/22/actions/media-playback-start.png");
     var pwronCmd = controller.getCommand("pwron");
@@ -48,6 +92,9 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
     resetBtn.setCommand(resetCmd);
     resetBtn.setToolTipText(this.tr("Reset board. (%1)", resetCmd.toString()));
     this.add(resetBtn);
+
+
+	qx.util.TimerManager.getInstance().start(this._requestStatus, 10000, this, null, 0); 
   },
 
 
@@ -57,7 +104,25 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
     __removeBtn : null,
     __menuItemStore : null,
     __addBtn : null,
-    __prefBtn : null
+    __prefBtn : null,
+
+		_requestStatus : function()
+		{
+			var req = new qx.io.request.Jsonp();
+			req.setUrl(location.protocol + "//" + location.hostname + ':3000/status');
+
+			req.addListener("success", function(e)
+			{
+				var req = e.getTarget(),
+				    status = req.getResponse();
+
+				this.__temp.setValue((status.temperature / 1000).toFixed(2));
+				this.__power.setValue((status.power / 1000).toFixed(2));
+				this.__load.setValue(status.loadAvg);
+			}, this);
+			req.send();
+		}
+
   },
 
 

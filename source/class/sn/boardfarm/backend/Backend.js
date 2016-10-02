@@ -6,6 +6,8 @@ require("./power/Power");
 var os = require('os');
 var pty = require('pty.js');
 var express = require('express');
+var readline = require('readline');
+var fs = require('fs');
 
 qx.Class.define("sn.boardfarm.backend.Backend",
 {
@@ -13,11 +15,55 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 
 	construct : function()
 	{
+		sn.boardfarm.backend.Backend.constructor.__backend = this;
 		sn.boardfarm.backend.Fritz.getInstance();
+	},
+
+	properties :
+	{
+		loadAvg : { init : 0, event : "loadAvgChanged" },
+		power : { init : 0, event : "powerChanged" },
+		temperature : { init : 0, event : "temperatureChanged" }
 	},
 
 	members :
 	{
+		readTemperature : function()
+		{
+			var rl = readline.createInterface({
+				input: fs.createReadStream('/sys/class/thermal/thermal_zone1/temp')
+			});
+
+			var base = this;
+			rl.on('line', function (line)
+			{
+				base.setTemperature(parseInt(line));
+			});
+		},
+
+		readPower : function()
+		{
+			this.__mainSupply.adapterReadPower();
+		},
+
+		_updateMainPower : function(e)
+		{
+			this.setPower(e.getData());
+		},
+
+		readLoadAvg : function()
+		{
+			var rl = readline.createInterface({
+				input: fs.createReadStream('/proc/loadavg')
+			});
+
+			var base = this;
+			rl.on('line', function (line)
+			{
+				base.setLoadAvg(line);
+			});
+		},
+
 		__mainSupply : null,
 		__app : null,
 
@@ -30,9 +76,11 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			var supply = cfg.getMainSupply().ident.split(":");
 			supply[2] = cfg.getMainSupply().port;
 			this.__mainSupply = pwr.portFactory(supply[0], supply[1], supply[2]);
+			this.__mainSupply.addListener("adapterPowerChanged", this._updateMainPower, this);
 
 			this.__app = express();
 			var expressWs = require('express-ws')(this.__app);
+			this.__app.get('/status', this.backendStatus);
 			this.__app.get('/boards', this.listBoards);
 			this.__app.get('/boards/:board/power', this.boardPower);
 			this.__app.get('/terminals', this.createTerminal);
@@ -47,8 +95,36 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		{
 			var cfg = sn.boardfarm.backend.Config.getInstance();
 
+			/* read Temperature every 10 seconds */
+			this.readTemperature();
+			setInterval(qx.lang.Function.bind(this.readTemperature, this), 10000);
+
+			/* read Load every 10 seconds */
+			this.readLoadAvg();
+			setInterval(qx.lang.Function.bind(this.readLoadAvg, this), 10000);
+
+			/* it's enough to read power every 30 seconds or so */
+			this.readPower();
+			setInterval(qx.lang.Function.bind(this.readPower, this), 30000);
+
+			/* let the app listen for connections */
 			console.log('App: listening to http://' + cfg.getListenHost() + ':' + cfg.getListenPort());
 			this.__app.listen(cfg.getListenPort(), cfg.getListenHost());
+		},
+
+		backendStatus : function(req, res)
+		{
+			var cfg = sn.boardfarm.backend.Config.getInstance();
+			var backend = sn.boardfarm.backend.Backend.constructor.__backend;
+			var stats =
+			{
+				loadAvg : backend.getLoadAvg(),
+				power : backend.getPower(),
+				temperature : backend.getTemperature(),
+			};
+
+			res.jsonp(stats);
+			res.send();
 		},
 
 		listBoards : function(req, res)
@@ -164,6 +240,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 
 	statics :
 	{
+		__backend : null,
 		__terminals : {},
 		__logs : {},
 	}

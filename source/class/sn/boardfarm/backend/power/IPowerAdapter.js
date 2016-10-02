@@ -1,5 +1,10 @@
 qx.Interface.define("sn.boardfarm.backend.power.IPowerAdapter",
 {
+	events :
+	{
+		"adapterPowerChanged" : "qx.event.type.Data"
+	},
+
 	properties :
 	{
 		adapterIdent : {}
@@ -7,6 +12,7 @@ qx.Interface.define("sn.boardfarm.backend.power.IPowerAdapter",
 
 	members :
 	{
+		adapterReadPower : function() {},
 		adapterReadState : function() {},
 
 		adapterGetPortNum : function() {},

@@ -25,6 +25,11 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 		pwr.addAdapter(this.getAdapterIdent(), this);
 	},
 
+	events :
+	{
+		"adapterPowerChanged" : "qx.event.type.Data"
+	},
+
 	properties :
 	{
 		adapterIdent : {},
@@ -34,8 +39,39 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 
 	members :
 	{
+		__powerConnectListener : null,
+		adapterReadPower : function()
+		{
+			var fr = sn.boardfarm.backend.Fritz.getInstance();
+			var sid = fr.getSid();
+
+			/* cleanup if we came from a deferred read */
+			if (this.__powerConnectListener)
+				fr.removeListenerById(this.__powerConnectListener);
+
+			/* no sid, schedule a state read on connect */
+			if (!sid) {
+				this.__states = { 0 : -1 };
+
+				this.__powerConnectListener = fr.addListener("connect", function(e) {
+					this.adapterReadState();
+				}, this);
+
+				return;
+			}
+
+			var base = this;
+			var moreParam = { url : "192.168.178.1" };
+			smartfritz.getSwitchPower(fr.getSid(), this.getAin(), function(value){
+				if (value == "inval")
+					value = 0;
+
+				base.fireDataEvent("adapterPowerChanged", value);
+			}, moreParam);
+		},
+
 		__states : {},
-		__connectListener : null,
+		__stateConnectListener : null,
 
 		adapterReadState : function()
 		{
@@ -43,14 +79,14 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			var sid = fr.getSid();
 
 			/* cleanup if we came from a deferred read */
-			if (this.__connectListener)
-				fr.removeListenerById(this.__connectListener);
+			if (this.__stateConnectListener)
+				fr.removeListenerById(this.__stateConnectListener);
 
 			/* no sid, schedule a state read on connect */
 			if (!sid) {
 				this.__states = { 0 : -1 };
 
-				this.__connectListener = fr.addListener("connect", function(e) {
+				this.__stateConnectListener = fr.addListener("connect", function(e) {
 					this.adapterReadState();
 				}, this);
 
