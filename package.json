@@ -1,0 +1,21 @@
+{
+  "name": "boardfarm-backend",
+  "version": "0.1.0",
+  "main": "boardfarm-backend.js",
+  "repository": "https://github.com/sourcelair/xterm.js",
+  "license": "GPL2",
+  "devDependencies": {
+    "smartfritz" : "0.1.7",
+    "pty.js": "0.3.1",
+    "nodemon": "1.10.2",
+    "express": "4.13.4",
+    "express-ws": "2.0.0-rc.1",
+    "qooxdoo": "5.0.1",
+    "grunt": "~0.4.2",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-http-server": "^1.13.0"
+  },
+  "scripts": {
+    "start": "nodemon --watch sn --watch boardfarm-backend --exec bash -c 'node boardfarm-backend'"
+  }
+}
