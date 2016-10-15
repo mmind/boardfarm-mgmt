@@ -20,6 +20,8 @@ qx.Class.define("sn.boardfarm.backend.Boards",
 		{
 			if (line.charAt(0) == "#")
 				return;
+			if (line.length == 0)
+				return;
 
 			var tmp = line.split(":");
 			boards.addBoardEntry(tmp[0], line);
