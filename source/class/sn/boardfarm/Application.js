@@ -105,11 +105,13 @@ qx.Class.define("sn.boardfarm.Application",
 //qx.log.Logger.warn(e.getTarget().getSelection());
 		switch(el.type) {
 			case "adapter":
+				this.__toolBarView.setViewmode("adapter");
 				this.__boardPane.hide();
 //				this.__adapterPane.setAdapter(this.__treeElements[e.getTarget().toHashCode()].name);
 //				this.__adapterPane.show();
 				break;
 			case "board":
+				this.__toolBarView.setViewmode("board");
 //				this.__adapterPane.hide();
 				this.__boardPane.setBoard(el.name);
 				this.__boardPane.show();

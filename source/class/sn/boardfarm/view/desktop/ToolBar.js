@@ -72,39 +72,61 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 	// Add a spacer to move board handling to the right
 	this.addSpacer();
 
-    var pwronBtn = new qx.ui.toolbar.Button(this.tr("Power On"), "icon/22/actions/media-playback-start.png");
+    this.__pwronBtn = new qx.ui.toolbar.Button(this.tr("Power On"), "icon/22/actions/media-playback-start.png");
     var pwronCmd = controller.getCommand("pwron");
-    pwronBtn.setCommand(pwronCmd);
-    pwronBtn.setToolTipText(this.tr("Start board power supply. (%1)", pwronCmd.toString()));
-    this.add(pwronBtn);
+    this.__pwronBtn.setCommand(pwronCmd);
+    this.__pwronBtn.setToolTipText(this.tr("Start board power supply. (%1)", pwronCmd.toString()));
+    this.add(this.__pwronBtn);
 
-    var pwroffBtn = new qx.ui.toolbar.Button(this.tr("Power Off"), "icon/22/actions/media-playback-stop.png");
+    this.__pwroffBtn = new qx.ui.toolbar.Button(this.tr("Power Off"), "icon/22/actions/media-playback-stop.png");
     var pwroffCmd = controller.getCommand("pwroff");
-    pwroffBtn.setCommand(pwroffCmd);
-    pwroffBtn.setToolTipText(this.tr("Stop board power supply. (%1)", pwroffCmd.toString()));
-    this.add(pwroffBtn);
+    this.__pwroffBtn.setCommand(pwroffCmd);
+    this.__pwroffBtn.setToolTipText(this.tr("Stop board power supply. (%1)", pwroffCmd.toString()));
+    this.add(this.__pwroffBtn);
 
     // Add a separator
     this.addSeparator();
 
-    var resetBtn = new qx.ui.toolbar.Button(this.tr("Reset"), "icon/22/actions/view-refresh.png");
+    this.__resetBtn = new qx.ui.toolbar.Button(this.tr("Reset"), "icon/22/actions/view-refresh.png");
     var resetCmd = controller.getCommand("reset");
-    resetBtn.setCommand(resetCmd);
-    resetBtn.setToolTipText(this.tr("Reset board. (%1)", resetCmd.toString()));
-    this.add(resetBtn);
+    this.__resetBtn.setCommand(resetCmd);
+    this.__resetBtn.setToolTipText(this.tr("Reset board. (%1)", resetCmd.toString()));
+    this.add(this.__resetBtn);
 
 
 	qx.util.TimerManager.getInstance().start(this._requestStatus, 10000, this, null, 0); 
   },
 
+	properties :
+	{
+		viewmode : { apply : "_applyViewmode" }
+	},
 
   members :
   {
+	__pwronBtn : null,
+	__pwroffBtn : null,
+	__resetBtn : null,
+
     // private members
+
     __removeBtn : null,
     __menuItemStore : null,
     __addBtn : null,
     __prefBtn : null,
+
+		_applyViewmode : function(newMode, oldMode)
+		{
+			if (newMode == "board") {
+				this.__pwronBtn.setEnabled(true);
+				this.__pwroffBtn.setEnabled(true);
+				this.__resetBtn.setEnabled(true);
+			} else {
+				this.__pwronBtn.setEnabled(false);
+				this.__pwroffBtn.setEnabled(false);
+				this.__resetBtn.setEnabled(false);
+			}
+		},
 
 		_requestStatus : function()
 		{
