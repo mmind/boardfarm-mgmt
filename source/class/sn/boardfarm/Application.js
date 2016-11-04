@@ -1,25 +1,14 @@
-/* ************************************************************************
-
-   qooxdoo - the new era of web development
-
-   http://qooxdoo.org
-
-   Copyright:
-     2004-2008 1&1 Internet AG, Germany, http://www.1und1.de
-
-   License:
-     MIT: https://opensource.org/licenses/MIT
-     See the LICENSE file in the project's top-level directory for details.
-
-   Authors:
-     * Fabian Jakobs (fjakobs)
-     * Sebastian Werner (wpbasti)
-     * Martin Wittemann (martinwittemann)
-
-************************************************************************ */
+/*
+ * Boardfarm Management application
+ * Copyright (c) 2016 Heiko Stuebner <heiko@sntech.de>
+ *
+ * License:
+ *   MIT: https://opensource.org/licenses/MIT
+ *   See the LICENSE file in the project's top-level directory for details.
+ */
 
 /**
- * The feed reader's main application class.
+ * Main application class.
  *
  * @asset(qx/icon/${qx.icontheme}/22/apps/internet-feed-reader.png)
  * @asset(qx/icon/${qx.icontheme}/22/actions/process-stop.png)

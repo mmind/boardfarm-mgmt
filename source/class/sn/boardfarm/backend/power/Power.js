@@ -1,3 +1,12 @@
+/*
+ * Boardfarm Management application
+ * Copyright (c) 2016 Heiko Stuebner <heiko@sntech.de>
+ *
+ * License:
+ *   MIT: https://opensource.org/licenses/MIT
+ *   See the LICENSE file in the project's top-level directory for details.
+ */
+
 var pwr = require("./FritzDect");
 var pwr = require("./Servo");
 var pwr = require("./Ykush");
