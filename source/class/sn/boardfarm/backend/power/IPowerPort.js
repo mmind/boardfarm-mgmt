@@ -15,13 +15,8 @@ qx.Interface.define("sn.boardfarm.backend.power.IPowerPort",
 		portGetState : function() {},
 
 		/*
-		 * Turn this port off
+		 * Set the state of this port, 1 on, 0 off
 		 */
-		portPowerOff : function() {},
-
-		/*
-		 * Turn this port on
-		 */
-		portPowerOn : function() {}
+		portSetState : function(newState) {},
 	}
 });

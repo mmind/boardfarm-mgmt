@@ -80,9 +80,10 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 
 			this.__app = express();
 			var expressWs = require('express-ws')(this.__app);
+
 			this.__app.get('/status', this.backendStatus);
 			this.__app.get('/boards', this.listBoards);
-			this.__app.get('/boards/:board/power', this.boardPower);
+			this.__app.get('/boards/:board/power/:command', this.boardPower);
 			this.__app.get('/terminals', this.createTerminal);
 			this.__app.get('/terminals/:pid/size', this.resizeTerminal);
 			this.__app.ws('/terminals/:pid', this.connectTerminalWebsocket);
@@ -234,7 +235,27 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 
 		boardPower : function(req, res)
 		{
+			var board = req.params.board,
+			    pwrcmd = req.params.command;
 
+			var b = sn.boardfarm.backend.Boards.getInstance().getBoard(board);
+
+			switch(pwrcmd) {
+				case "on":
+					b.powerOn();
+					break;
+				case "off":
+					b.powerOff();
+					break;
+				case "reset":
+					b.reset();
+					break;
+				default:
+					console.log("Unknown power command "+pwrcmd+" for board "+board);
+					break;
+			}
+
+			res.end();
 		}
 	},
 

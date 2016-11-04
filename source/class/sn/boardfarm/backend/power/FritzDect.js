@@ -23,16 +23,20 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 		this.__states = { 0 : -1 };
 
 		pwr.addAdapter(this.getAdapterIdent(), this);
+
+		this.setPort(0);
 	},
 
 	events :
 	{
-		"adapterPowerChanged" : "qx.event.type.Data"
+		"adapterPowerChanged" : "qx.event.type.Data",
+		"adapterPortStateChanged" : "qx.event.type.Data"
 	},
 
 	properties :
 	{
 		adapterIdent : {},
+		port : {},
 		board : { init : null, nullable : true },
 		ain : { init : "", check : "String"}
 	},
@@ -117,6 +121,11 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			return this.__states[0];
 		},
 
+		adapterSetPortState : function(port, newState)
+		{
+
+		},
+
 		portGetAdapter : function()
 		{
 			return this;
@@ -124,18 +133,12 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 
 		portGetState : function()
 		{
-			return this.__states[0];
+			return this.portGetAdapter().adapterGetPortState(this.getPort());
 		},
 
-		portPowerOff : function()
+		portSetState : function(newState)
 		{
-			
-//			this.constructor.__states[this.getDeviceId()][this.getPort()] = 0;
-		},
-
-		portPowerOn : function()
-		{
-
+			this.portGetAdapter().adapterSetPortState(this.getPort(), newState);
 		}
 	}
 });

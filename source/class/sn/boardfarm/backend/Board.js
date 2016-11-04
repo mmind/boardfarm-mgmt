@@ -18,7 +18,7 @@ qx.Class.define("sn.boardfarm.backend.Board",
 		this.__power = sn.boardfarm.backend.power.Power.getInstance().portFactory(data[3], data[4], data[5]);
 		this.__power.setBoard(this);
 
-		console.log("Board: added "+name + " on port "+data[5]+" of "+ this.__power.portGetAdapter().getAdapterIdent());
+		console.log("Board: added "+name + " on port " + this.__power.getPort()+" of "+ this.__power.portGetAdapter().getAdapterIdent());
 	},
 
 	properties :
@@ -30,6 +30,23 @@ qx.Class.define("sn.boardfarm.backend.Board",
 
 	members :
 	{
-		__power : null
+		__power : null,
+
+		powerOn : function()
+		{
+			this.__power.portSetState(1);
+		},
+
+		powerOff : function()
+		{
+			this.__power.portSetState(0);
+		},
+
+		reset : function()
+		{
+			/* Possibly add board-specific reset actions */
+
+			/* Fallback powercycle */
+		}
 	}
 });

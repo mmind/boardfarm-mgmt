@@ -21,7 +21,8 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 
 	events :
 	{
-		"adapterPowerChanged" : "qx.event.type.Data"
+		"adapterPowerChanged" : "qx.event.type.Data",
+		"adapterPortStateChanged" : "qx.event.type.Data"
 	},
 
 	properties :
@@ -87,6 +88,26 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 		adapterGetPortState : function(port)
 		{
 			return this.__states[port];
+		},
+
+		adapterSetPortState : function(port, newState)
+		{
+			var child;
+			var serial = this.getSerial();
+			var base = this;
+			var cmd = newState ? "-u" : "-d";
+
+			child = exec("ykush -s " + serial + " " + cmd + " " + (parseInt(port) + 1), function (error, stdout, stderr)
+			{
+				if (error !== null) {
+					console.log("ykush command returned " + error);
+					return;
+				}
+
+				base.__states[port] = newState;
+				base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
+				console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
+			});
 		}
 	}
 });
@@ -127,18 +148,12 @@ qx.Class.define("sn.boardfarm.backend.power.YkushPort",
 
 		portGetState : function()
 		{
-			return this.__adapter.adapterGetPortState(this.getPort());
+			return this.portGetAdapter().adapterGetPortState(this.getPort());
 		},
 
-		portPowerOff : function()
+		portSetState : function(newState)
 		{
-			
-//			this.constructor.__states[this.getDeviceId()][this.getPort()] = 0;
-		},
-
-		portPowerOn : function()
-		{
-
+			this.portGetAdapter().adapterSetPortState(this.getPort(), newState);
 		}
 	}
 });
