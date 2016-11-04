@@ -230,17 +230,55 @@ qx.Class.define("sn.boardfarm.Application",
       commands.reload.addListener("execute", this.reload, this);
 
       commands.pwron = new qx.ui.command.Command("Control+1");
-//      commands.pwron.addListener("execute", this.showAbout, this);
+      commands.pwron.addListener("execute", this.pwronBoard, this);
 
       commands.pwroff = new qx.ui.command.Command("Control+2");
-//      commands.pwroff.addListener("execute", this.showPreferences, this);
+      commands.pwroff.addListener("execute", this.pwroffBoard, this);
 
       commands.reset = new qx.ui.command.Command("Control+3");
-//      commands.reset.addListener("execute", this.showAddFeed, this);
+      commands.reset.addListener("execute", this.resetBoard, this);
 
       this.__commands = commands;
     },
 
+	_boardPower : function(board, command)
+	{
+		/* request adapter + board list */
+		var req = new qx.io.request.Jsonp();
+		req.setUrl(location.protocol + "//" + location.hostname + ':3000/boards/'+board+"/power/"+command);
+
+		req.addListener("success", function(e) {
+			var req = e.getTarget();
+
+			/* something to do? */
+		}, this);
+
+		req.send();
+	},
+
+	pwronBoard : function(e)
+	{
+		if (this.__toolBarView.getViewmode() != "board")
+			return;
+
+		this._boardPower(this.__boardPane.getBoard(), "on");
+	},
+
+	pwroffBoard : function(e)
+	{
+		if (this.__toolBarView.getViewmode() != "board")
+			return;
+
+		this._boardPower(this.__boardPane.getBoard(), "off");
+	},
+
+	resetBoard : function(e)
+	{
+		if (this.__toolBarView.getViewmode() != "board")
+			return;
+
+		this._boardPower(this.__boardPane.getBoard(), "reset");
+	},
 
     /**
      * Get the command with the given command id
