@@ -1,0 +1,17 @@
+
+Building the web-ui:
+--------------------
+
+Get a copy / clone of qooxdoo (qooxdoo.org), put it somewhere
+like ../qooxdoo and run
+
+    ./generate.py build
+
+to create the compiled javascript file.
+
+Running the backend:
+--------------------
+
+Run
+    npm install
+    npm start

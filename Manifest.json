@@ -3,17 +3,17 @@
   {
     "name" : "boardfarm",
 
-    "summary" : "Custom Application",
-    "description" : "This is a skeleton for a custom application with qooxdoo.",
+    "summary" : "Boardfarm Management",
+    "description" : "Application for managing and accessing boards in a boardfarm",
     
     "homepage" : "http://some.homepage.url/",
 
-    "license" : "SomeLicense",
+    "license" : "MIT",
     "authors" : 
     [
       {
-        "name" : "First Author (uid)",
-        "email" : "first.author@some.domain"
+        "name" : "Heiko Stuebner",
+        "email" : "heiko@sntech.de"
       }
     ],
 
