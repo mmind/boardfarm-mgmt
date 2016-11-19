@@ -41,6 +41,11 @@ qx.Class.define("sn.boardfarm.backend.Board",
 	{
 		__power : null,
 
+		powerState : function()
+		{
+			return this.__power.portGetState();
+		},
+
 		powerOn : function()
 		{
 			this.__power.portSetState(1);
