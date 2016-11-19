@@ -58,6 +58,9 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 
 		readPower : function()
 		{
+			var pwr = sn.boardfarm.backend.power.Power.getInstance();
+
+			pwr.refreshAll();
 			this.__mainSupply.adapterReadPower();
 		},
 
