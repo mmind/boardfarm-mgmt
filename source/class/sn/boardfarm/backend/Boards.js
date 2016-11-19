@@ -53,6 +53,11 @@ qx.Class.define("sn.boardfarm.backend.Boards",
 		__lines : {},
 		__boards : {},
 
+		listBoards : function()
+		{
+			return Object.keys(this.__boards);
+		},
+
 		addBoardEntry : function(name, line)
 		{
 			if (this.__lines[name])
