@@ -135,11 +135,21 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		{
 			var cfg = sn.boardfarm.backend.Config.getInstance();
 			var backend = sn.boardfarm.backend.Backend.constructor.__backend;
+			var boards = sn.boardfarm.backend.Boards.getInstance();
+			var bList = boards.listBoards();
+
+			var bStates = {};
+			for (var i = 0; i < bList.length; i++) {
+				var board = boards.getBoard(bList[i]);
+				bStates[bList[i]] = board.powerState();
+			}
+
 			var stats =
 			{
 				loadAvg : backend.getLoadAvg(),
 				power : backend.getPower(),
 				temperature : backend.getTemperature(),
+				boardStates : bStates,
 			};
 
 			res.jsonp(stats);
