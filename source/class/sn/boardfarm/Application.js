@@ -14,6 +14,8 @@
  * @asset(qx/icon/${qx.icontheme}/22/actions/process-stop.png)
  * @asset(qx/icon/${qx.icontheme}/22/apps/preferences-clock.png)
  * @asset(qx/icon/${qx.icontheme}/22/places/folder.png)
+ * @asset(qx/icon/${qx.icontheme}/16/actions/media-playback-start.png)
+ * @asset(qx/icon/${qx.icontheme}/16/actions/media-playback-stop.png)
  * @asset(xterm/xterm.js)
  * @asset(xterm/xterm.css)
  * @asset(xterm/addons/attach/attach.js)
@@ -80,8 +82,38 @@ qx.Class.define("sn.boardfarm.Application",
 				    status = req.getResponse();
 
 				this.__toolBarView.setStatus(status);
+				this._updateTree(status);
 			}, this);
 			req.send();
+		},
+
+		_updateTree: function(status)
+		{
+			var keys = Object.keys(this.__treeElements);
+			var boards = Object.keys(status.boardStates);
+
+			for (var j = 0; j < boards.length; j++) {
+				for (var i = 0; i < keys.length; i++) {
+					var elem = this.__treeElements[keys[i]];
+					if (elem.type != "board")
+						continue;
+					if (elem.name != boards[j])
+						continue;
+
+					switch (status.boardStates[boards[j]]) {
+					case 1:
+						elem.widget.setIcon("icon/16/actions/media-playback-start.png");
+						break;
+					case 0:
+						elem.widget.setIcon("icon/16/actions/media-playback-stop.png");
+						break;
+					case -1:
+					default:
+						elem.widget.setIcon("icon/16/mimetypes/text-plain.png");
+						break;
+					}
+				}
+			}
 		},
 
 		__selectTreeElement : function(e)
@@ -118,13 +150,13 @@ qx.Class.define("sn.boardfarm.Application",
 				var tf = new qx.ui.tree.TreeFolder(tfName);
 				tf.setOpen(true);
 				root.add(tf);
-				this.__treeElements[tf.toHashCode()] = { type : "adapter", name : data[i].name };
+				this.__treeElements[tf.toHashCode()] = { type : "adapter", name : data[i].name, widget : tf };
 
 				for (var j = 0; j < data[i].ports.length; j++) {
 					var port = data[i].ports[j]
 					var tb = new qx.ui.tree.TreeFile(port.name);
 					tf.add(tb);
-					this.__treeElements[tb.toHashCode()] = { type : "board", name : port.name };
+					this.__treeElements[tb.toHashCode()] = { type : "board", name : port.name, widget : tb };
 				}
 			}
 		},
