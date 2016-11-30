@@ -83,7 +83,7 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			}, moreParam);
 		},
 
-		__states : {},
+		__states : null,
 		__stateConnectListener : null,
 
 		adapterReadState : function()

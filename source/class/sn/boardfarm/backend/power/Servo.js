@@ -56,7 +56,7 @@ qx.Class.define("sn.boardfarm.backend.power.Servo",
 			this.fireDataEvent("adapterPowerChanged", 0);
 		},
 
-		__states : {},
+		__states : null,
 
 		adapterReadState : function()
 		{

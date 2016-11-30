@@ -24,6 +24,7 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 		this.setAdapterIdent("ykush:"+serial);
 		this.setSerial(serial);
 		this.__states = { 0 : -1, 1 : -1, 2 : -1 };
+		this.__ports = {};
 
 		pwr.addAdapter(this.getAdapterIdent(), this);
 	},
@@ -48,7 +49,7 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 			this.fireDataEvent("adapterPowerChanged", 0);
 		},
 
-		__states : {},
+		__states : null,
 
 		adapterReadState : function()
 		{
@@ -71,7 +72,7 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 			});
 		},
 
-		__ports : {},
+		__ports : null,
 
 		adapterAddPort : function(port, obj)
 		{
