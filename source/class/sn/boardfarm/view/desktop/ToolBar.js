@@ -99,6 +99,7 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 
 	properties :
 	{
+		status : { apply : "_applyStatus" },
 		viewmode : { apply : "_applyViewmode" }
 	},
 
@@ -107,6 +108,13 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 		__pwronBtn : null,
 		__pwroffBtn : null,
 		__resetBtn : null,
+
+		_applyStatus : function(status, oldStatus)
+		{
+			this.__temp.setValue((status.temperature / 1000).toFixed(2));
+			this.__power.setValue((status.power / 1000).toFixed(2));
+			this.__load.setValue(status.loadAvg);
+		},
 
 		_applyViewmode : function(newMode, oldMode)
 		{
@@ -131,9 +139,7 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 				var req = e.getTarget(),
 				    status = req.getResponse();
 
-				this.__temp.setValue((status.temperature / 1000).toFixed(2));
-				this.__power.setValue((status.power / 1000).toFixed(2));
-				this.__load.setValue(status.loadAvg);
+				this.setStatus(status);
 			}, this);
 			req.send();
 		}
