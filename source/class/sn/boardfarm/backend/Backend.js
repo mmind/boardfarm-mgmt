@@ -176,10 +176,12 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 				};
 
 				for (var j = 0; j < t.adapterGetPortNum(); j++) {
-					var port = t.adapterGetPort(j);
-					var p = port.getBoard();
-					if (p)
-						ad.ports.push( { name : p.getName(), state : port.portGetState() });
+					try {
+						var port = t.adapterGetPort(j);
+						var p = port.getBoard();
+						if (p)
+							ad.ports.push( { name : p.getName(), state : port.portGetState() });
+					} catch (ex) {}
 				}
 
 				data.push(ad);
