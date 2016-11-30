@@ -65,6 +65,23 @@ qx.Class.define("sn.boardfarm.Application",
 					  currentLanguage + ", falling back to English.");
 				this.buildUpGui();
 			}
+
+			qx.util.TimerManager.getInstance().start(this._requestStatus, 10000, this, null, 0); 
+		},
+
+		_requestStatus : function()
+		{
+			var req = new qx.io.request.Jsonp();
+			req.setUrl(location.protocol + "//" + location.hostname + ':3000/status');
+
+			req.addListener("success", function(e)
+			{
+				var req = e.getTarget(),
+				    status = req.getResponse();
+
+				this.__toolBarView.setStatus(status);
+			}, this);
+			req.send();
 		},
 
 		__selectTreeElement : function(e)

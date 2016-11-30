@@ -93,8 +93,6 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 		this.__resetBtn.setCommand(resetCmd);
 		this.__resetBtn.setToolTipText(this.tr("Reset board. (%1)", resetCmd.toString()));
 		this.add(this.__resetBtn);
-
-		qx.util.TimerManager.getInstance().start(this._requestStatus, 10000, this, null, 0); 
 	},
 
 	properties :
@@ -127,21 +125,6 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 				this.__pwroffBtn.setEnabled(false);
 				this.__resetBtn.setEnabled(false);
 			}
-		},
-
-		_requestStatus : function()
-		{
-			var req = new qx.io.request.Jsonp();
-			req.setUrl(location.protocol + "//" + location.hostname + ':3000/status');
-
-			req.addListener("success", function(e)
-			{
-				var req = e.getTarget(),
-				    status = req.getResponse();
-
-				this.setStatus(status);
-			}, this);
-			req.send();
 		}
 	},
 
