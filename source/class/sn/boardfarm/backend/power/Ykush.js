@@ -76,7 +76,7 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 		adapterAddPort : function(port, obj)
 		{
 			if (this.__ports[port])
-				throw "Port "+port+" already set on "+this.getIdent();
+				throw "Port "+port+" already set on "+this.getAdapterIdent();
 
 			this.__ports[port] = obj;
 		},
@@ -89,7 +89,7 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 		adapterGetPort : function(port)
 		{
 			if (!this.__ports[port])
-				throw "Port "+port+" not set on "+this.getIdent();
+				throw "Port "+port+" not set on "+this.getAdapterIdent();
 
 			return this.__ports[port];
 		},
