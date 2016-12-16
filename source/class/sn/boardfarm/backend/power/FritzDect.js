@@ -108,10 +108,10 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 
 			var base = this;
 			var moreParam = { url : "192.168.178.1" };
-			smartfritz.getSwitchState(fr.getSid(), this.getAin(), function(state){
+			smartfritz.getSwitchState(fr.getSid(), this.getAin(), function(state) {
 				if (state == "inval")
 					state = 0;
-				base.__states = { 0 : state };
+				base.__states = { 0 : parseInt(state) };
 			}, moreParam);
 		},
 
