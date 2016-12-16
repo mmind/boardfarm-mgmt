@@ -130,9 +130,42 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			return this.__states[0];
 		},
 
+		__stateChangeConnectListener : null,
 		adapterSetPortState : function(port, newState)
 		{
+			var fr = sn.boardfarm.backend.Fritz.getInstance();
+			var sid = fr.getSid();
 
+			/* cleanup if we came from a deferred read */
+			if (this.__stateChangeConnectListener)
+				fr.removeListenerById(this.__stateChangeConnectListener);
+
+			/* no sid, schedule a state setting on connect */
+			if (!sid) {
+				this.__states = { 0 : -1 };
+
+				this.__stateChangeConnectListener = fr.addListener("connect", function(e) {
+					this.adapterSetPortState(port, newState);
+				}, this);
+
+				return;
+			}
+
+			var base = this;
+			var moreParam = { url : "192.168.178.1" };
+			if (newState == 0) {
+				smartfritz.setSwitchOff(fr.getSid(), this.getAin(), function(sid) {
+					base.__states[0] = 0;
+					base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
+					console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
+				}, moreParam);
+			} else {
+				smartfritz.setSwitchOn(fr.getSid(), this.getAin(), function(sid) {
+					base.__states[0] = 1;
+					base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
+					console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
+				}, moreParam);
+			}
 		},
 
 		portGetAdapter : function()
