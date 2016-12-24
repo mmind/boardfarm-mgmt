@@ -62,7 +62,11 @@ qx.Class.define("sn.boardfarm.backend.power.Servo",
 		{
 			var base = this;
 
-			child = exec("/usr/bin/dut-control -p " + this.getDutPort(), function (error, stdout, stderr)
+			/*
+			 * spi_hold seems to be one of the few easy indicators
+			 * to check whether the system is turned on or off.
+			 */
+			child = exec("/usr/bin/dut-control -p " + this.getDutPort() + " spi_hold", function (error, stdout, stderr)
 			{
 				if (error !== null) {
 					console.log("dut-control command returned " + error);
@@ -73,11 +77,17 @@ qx.Class.define("sn.boardfarm.backend.power.Servo",
 				var data = stdout.split("\n");
 				for (var i = 0; i < data.length; i++) {
 
-					if (data[i].indexOf("power_state") == -1)
+					if (data[i].indexOf("spi_hold") == -1)
 						continue;
 
 					var state = data[i].split(":");
 					switch(state[1]) {
+						case "off":
+							base.__states = { 0 : 1 };
+							break;
+						case "on":
+							base.__states = { 0 : 0 };
+							break;
 						default:
 							console.log("unknown state " + state[1]);
 						case "ERR": /* fallthrough */
