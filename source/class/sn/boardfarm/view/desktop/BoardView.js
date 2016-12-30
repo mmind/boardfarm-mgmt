@@ -34,6 +34,11 @@ qx.Class.define("sn.boardfarm.view.desktop.BoardView", {
 
 	},
 
+	events :
+	{
+		"boardUpdated" : "qx.event.type.Data"
+	},
+
 	properties :
 	{
 		board : { apply : "_applyBoard" }
@@ -50,6 +55,7 @@ qx.Class.define("sn.boardfarm.view.desktop.BoardView", {
 				this.__xterms[value] = new sn.boardfarm.view.desktop.Xterm();
 				this.__xterms[value].setDecorator("main");
 				this.__xterms[value].setBoard(value);
+				this.__xterms[value].addListener("terminalUpdated", this._boardUpdated, this);
 				this.__vbox.add(this.__xterms[value], { flex : 1 });
 			}
 
@@ -63,6 +69,12 @@ qx.Class.define("sn.boardfarm.view.desktop.BoardView", {
 			/* no show the selected one */
 			this.__xterms[value].show();
 			qx.html.Element.flush();
+		},
+
+		_boardUpdated : function(e)
+		{
+			var bObj = e.getTarget();
+			this.fireDataEvent("boardUpdated", bObj.getBoard());
 		}
 	}
 });

@@ -30,6 +30,10 @@ qx.Class.define("sn.boardfarm.view.desktop.Xterm",
 		this.addListener("resize", this._onResize, this);
 	},
 
+	events : {
+		"terminalUpdated" : "qx.event.type.Event"
+	},
+
 	properties :
 	{
 		board : { init : null, apply : "_applyBoard", nullable : false, check : "String" },
@@ -125,6 +129,8 @@ qx.Class.define("sn.boardfarm.view.desktop.Xterm",
 				this.__socket.addEventListener('close', __detach);
 				this.__socket.addEventListener('error', __detach);
 
+				this.__socket.addEventListener('message', qx.lang.Function.bind(this._terminalUpdated, this));
+
 			}, this);
 			req.send();
 		},
@@ -139,6 +145,11 @@ qx.Class.define("sn.boardfarm.view.desktop.Xterm",
 		{
 			this.__term.detach(this.__socket);
 			this.__term = null;
+		},
+
+		_terminalUpdated : function()
+		{
+			this.fireEvent("terminalUpdated");
 		},
 
 		_resizeTerminal : function(size)

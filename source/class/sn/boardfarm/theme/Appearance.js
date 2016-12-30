@@ -9,9 +9,21 @@
 
 qx.Theme.define("sn.boardfarm.theme.Appearance",
 {
-  extend : qx.theme.indigo.Appearance,
+	extend : qx.theme.indigo.Appearance,
 
-  appearances :
-  {
-  }
+	appearances :
+	{
+		"tree-file/label" : {
+			include : "label",
+			alias : "label",
+
+			style : function(states, styles)
+			{
+				return {
+					textColor : states.updated ? "invalid" :
+						    states.selected ? "text-selected" : "text"
+				};
+			}
+		}
+	}
 });

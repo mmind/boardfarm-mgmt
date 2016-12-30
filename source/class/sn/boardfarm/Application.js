@@ -119,6 +119,8 @@ qx.Class.define("sn.boardfarm.Application",
 		__selectTreeElement : function(e)
 		{
 			var el = this.__treeElements[e.getTarget().getSelection()[0].toHashCode()];
+			el.widget.removeState("updated");
+			el.widget.updateAppearance();
 
 			switch(el.type) {
 			case "adapter":
@@ -159,6 +161,29 @@ qx.Class.define("sn.boardfarm.Application",
 					this.__treeElements[tb.toHashCode()] = { type : "board", name : port.name, widget : tb };
 				}
 			}
+		},
+
+		__showBoardUpdate : function(e)
+		{
+			var keys = Object.keys(this.__treeElements);
+			var sel = this.__treeView.getSelection();
+			var board = e.getData();
+
+			for (var i = 0; i < keys.length; i++) {
+				var elem = this.__treeElements[keys[i]];
+				if (elem.type != "board")
+					continue;
+				if (elem.name != board)
+					continue;
+
+				/* currently selected element got updated */
+				if (sel.length > 0 && sel[0].toHashCode() == elem.widget.toHashCode())
+					return;
+
+				elem.widget.addState("updated");
+				elem.widget.updateAppearance();
+			}
+
 		},
 
 		buildUpGui : function()
@@ -205,6 +230,7 @@ qx.Class.define("sn.boardfarm.Application",
 			this.__treeView.setHideRoot(true);
 
 			this.__boardPane = new sn.boardfarm.view.desktop.BoardView();
+			this.__boardPane.addListener("boardUpdated", this.__showBoardUpdate, this);
 			this.__horizontalSplitPane.add(this.__boardPane, 1);
 			this.__horizontalSplitPane.setAppearance("app-splitpane");
 		},
