@@ -121,8 +121,10 @@ qx.Class.define("sn.boardfarm.view.desktop.Xterm",
 				this.__socket = new WebSocket(socketURL);
 				this.__socket.onopen = qx.lang.Function.bind(this._attachTerminal, this);
 
-//				this.__socket.onclose = runFakeTerminal;
-//				this.__socket.onerror = runFakeTerminal;
+				var __detach = qx.lang.Function.bind(this._detachTerminal, this);
+				this.__socket.addEventListener('close', __detach);
+				this.__socket.addEventListener('error', __detach);
+
 			}, this);
 			req.send();
 		},
@@ -131,6 +133,12 @@ qx.Class.define("sn.boardfarm.view.desktop.Xterm",
 		{
 			this.__term.attach(this.__socket);
 			this.__term._initialized = true;
+		},
+
+		_detachTerminal : function()
+		{
+			this.__term.detach(this.__socket);
+			this.__term = null;
 		},
 
 		_resizeTerminal : function(size)
