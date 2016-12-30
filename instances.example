@@ -4,15 +4,15 @@
 #              servo - port number
 #              fritzdect - ain
 # pwr-index:   ykush - hub port index (1-3)
+#              everything else 0
+# soc:         the soc used on the board
 
-kylin:arm32:4000:ykush:YK21544:0:
-pinky:arm32:5000:servo:9900:0:
-gru:arm64:5001:servo:9901:0:
-r88:arm64:4001:ykush:YK21544:1:
+kylin:arm32:4000:ykush:YK21544:0:rk3036
+r88:arm64:4001:ykush:YK21544:1:rk3368
+rock:arm32:4002:ykush:YK21544:2:rk3188
+firefly:arm32:4003:ykush:YK21466:2:rk3288
+pinky:arm32:5000:servo:9900:0:rk3288
+gru:arm64:5001:servo:9901:0:rk3399
 
-# replaced by gru for now
-# rk3399evb:arm64:6000:fritzdect:087610266663:0:
-
-rock:arm32:4002:ykush:YK21544:2:
-
-# anderer ykush: YK21466
+# ES1 silicon, so of limited use
+rk3399evb:arm64:6000:fritzdect:087610266663:0:rk3399

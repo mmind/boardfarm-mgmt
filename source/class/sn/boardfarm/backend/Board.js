@@ -23,18 +23,20 @@ qx.Class.define("sn.boardfarm.backend.Board",
 
 		this.setArch(data[1]);
 		this.setPort(data[2]);
+		this.setSoc(data[6]);
 
 		this.__power = sn.boardfarm.backend.power.Power.getInstance().portFactory(data[3], data[4], data[5]);
 		this.__power.setBoard(this);
 
-		console.log("Board: added "+name + " on port " + this.__power.getPort()+" of "+ this.__power.portGetAdapter().getAdapterIdent());
+		console.log("Board: added " + this.getSoc() + "-" + name + " on port " + this.__power.getPort()+" of "+ this.__power.portGetAdapter().getAdapterIdent());
 	},
 
 	properties :
 	{
 		name : {},
 		arch : {},
-		port : { init : 0 }
+		port : { init : 0 },
+		soc : {}
 	},
 
 	members :
