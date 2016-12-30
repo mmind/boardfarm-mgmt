@@ -180,7 +180,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 						var port = t.adapterGetPort(j);
 						var p = port.getBoard();
 						if (p)
-							ad.ports.push( { name : p.getName(), state : port.portGetState() });
+							ad.ports.push({ name : p.getName(), soc : p.getSoc(), state : port.portGetState() });
 					} catch (ex) {}
 				}
 
