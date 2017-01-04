@@ -61,7 +61,7 @@ qx.Class.define("sn.boardfarm.backend.Boards",
 		addBoardEntry : function(name, line)
 		{
 			if (this.__lines[name])
-				throw "Board " + name + "already exists";
+				throw "Board " + name + " already exists";
 
 			this.__lines[name] = line;
 			this.__boards[name] = new sn.boardfarm.backend.Board(name);
@@ -70,7 +70,7 @@ qx.Class.define("sn.boardfarm.backend.Boards",
 		getBoardEntry : function(name)
 		{
 			if (!this.__lines[name])
-				throw "Board " + name + "does not exists";
+				throw "Board " + name + " does not exists";
 
 			return this.__lines[name];
 		},
@@ -78,7 +78,7 @@ qx.Class.define("sn.boardfarm.backend.Boards",
 		getBoard : function(name)
 		{
 			if (!this.__boards[name])
-				throw "Board " + name + "does not exists";
+				throw "Board " + name + " does not exists";
 
 			return this.__boards[name];
 		}
