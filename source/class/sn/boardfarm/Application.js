@@ -95,7 +95,7 @@ qx.Class.define("sn.boardfarm.Application",
 			for (var j = 0; j < boards.length; j++) {
 				for (var i = 0; i < keys.length; i++) {
 					var elem = this.__treeElements[keys[i]];
-					if (elem.type != "board")
+					if (elem.type != "board" && elem.type != "build")
 						continue;
 					if (elem.name != boards[j])
 						continue;
@@ -123,17 +123,25 @@ qx.Class.define("sn.boardfarm.Application",
 			el.widget.updateAppearance();
 
 			switch(el.type) {
+			case "build":
+				this.__toolBarView.setViewmode("build");
+//				this.__adapterPane.exclude();
+				this.__boardPane.exclude();
+				this.__buildPane.show();
+				break;
 			case "adapter":
 				this.__toolBarView.setViewmode("adapter");
-				this.__boardPane.hide();
+				this.__boardPane.exclude();
+				this.__buildPane.exclude();
 //				this.__adapterPane.setAdapter(this.__treeElements[e.getTarget().toHashCode()].name);
 //				this.__adapterPane.show();
 				break;
 			case "board":
 				this.__toolBarView.setViewmode("board");
-//				this.__adapterPane.hide();
+//				this.__adapterPane.exclude();
 				this.__boardPane.setBoard(el.name);
 				this.__boardPane.show();
+				this.__buildPane.exclude();
 				break;
 			default:
 				qx.log.Logger.warn("type " + el.type + " unknown");
@@ -146,6 +154,11 @@ qx.Class.define("sn.boardfarm.Application",
 			root.removeAll();
 			this._disposeMap("__treeElements");
 			this.__treeElements = {};
+
+			var tb = new qx.ui.tree.TreeFile("Build");
+			root.add(tb);
+			this.__treeElements[tb.toHashCode()] = { type : "build", name : "buildlog", widget : tb };
+			this.__treeView.setSelection([tb]);
 
 			for (var i = 0; i < data.length; i++) {
 				var tfName = data[i].name + "("+data[i].ports.length+"/"+data[i].numPorts+")";
@@ -163,11 +176,10 @@ qx.Class.define("sn.boardfarm.Application",
 			}
 		},
 
-		__showBoardUpdate : function(e)
+		__showBoardUpdate : function(board)
 		{
 			var keys = Object.keys(this.__treeElements);
 			var sel = this.__treeView.getSelection();
-			var board = e.getData();
 
 			for (var i = 0; i < keys.length; i++) {
 				var elem = this.__treeElements[keys[i]];
@@ -184,6 +196,16 @@ qx.Class.define("sn.boardfarm.Application",
 				elem.widget.updateAppearance();
 			}
 
+		},
+
+		__buildUpdated : function(e)
+		{
+			this.__showBoardUpdate("buildlog");
+		},
+
+		__boardUpdated : function(e)
+		{
+			this.__showBoardUpdate(e.getData());
 		},
 
 		buildUpGui : function()
@@ -229,15 +251,25 @@ qx.Class.define("sn.boardfarm.Application",
 			this.__treeView.setRoot(root);
 			this.__treeView.setHideRoot(true);
 
+			this.__buildPane = new sn.boardfarm.view.desktop.BuildView();
+			this.__buildPane.addListener("buildUpdated", this.__buildUpdated, this);
+			this.__horizontalSplitPane.add(this.__buildPane, 1);
+
 			this.__boardPane = new sn.boardfarm.view.desktop.BoardView();
-			this.__boardPane.addListener("boardUpdated", this.__showBoardUpdate, this);
+			this.__boardPane.addListener("boardUpdated", this.__boardUpdated, this);
 			this.__horizontalSplitPane.add(this.__boardPane, 1);
+
 			this.__horizontalSplitPane.setAppearance("app-splitpane");
+			this.__buildPane.exclude();
+			this.__boardPane.exclude();
 		},
 
 		_initializeCommands : function()
 		{
 			var commands = {};
+
+			commands.build = new qx.ui.command.Command("Control+B");
+			commands.build.addListener("execute", this.build, this);
 
 			commands.reload = new qx.ui.command.Command("Control+R");
 			commands.reload.addListener("execute", this.reload, this);
@@ -252,6 +284,17 @@ qx.Class.define("sn.boardfarm.Application",
 			commands.reset.addListener("execute", this.resetBoard, this);
 
 			this.__commands = commands;
+		},
+
+		build : function(e)
+		{
+			var req = new qx.io.request.Jsonp();
+			req.setUrl(location.protocol + "//" + location.hostname + ':3000/build');
+
+			req.addListener("success", function(e)
+			{
+			}, this);
+			req.send();
 		},
 
 		_boardPower : function(board, command)

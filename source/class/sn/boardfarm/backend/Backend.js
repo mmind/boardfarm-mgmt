@@ -105,6 +105,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			this.__app.get('/terminals', this.createTerminal);
 			this.__app.get('/terminals/:pid/size', this.resizeTerminal);
 			this.__app.ws('/terminals/:pid', this.connectTerminalWebsocket);
+			this.__app.get('/build', this.buildKernel);
 
 			var boards = sn.boardfarm.backend.Boards.getInstance();
 			boards.addListener("loadComplete", this._startApp, this);
@@ -197,14 +198,24 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			    rows = parseInt(req.query.rows),
 			    board = req.query.board;
 
-			var b = sn.boardfarm.backend.Boards.getInstance().getBoard(board);
-			var term = pty.spawn("./telnet.sh", [ b.getPort() ], {
-			        name: 'xterm-color',
-			        cols: cols || 80,
-			        rows: rows || 24,
-			        cwd: process.env.PWD,
-			        env: process.env
-			});
+			if (board == "buildlog") {
+				var term = pty.spawn("./buildlog.sh", [ ], {
+				        name: 'xterm-color',
+				        cols: cols || 80,
+				        rows: rows || 24,
+				        cwd: process.env.PWD,
+				        env: process.env
+				});
+			} else {
+				var b = sn.boardfarm.backend.Boards.getInstance().getBoard(board);
+				var term = pty.spawn("./telnet.sh", [ b.getPort() ], {
+				        name: 'xterm-color',
+				        cols: cols || 80,
+				        rows: rows || 24,
+				        cwd: process.env.PWD,
+				        env: process.env
+				});
+			}
 
 			console.log('Terminal: Started console for board ' + board + ' with PID: ' + term.pid);
 			sn.boardfarm.backend.Backend.constructor.__terminals[term.pid] = term;
@@ -285,6 +296,30 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 					break;
 			}
 
+			res.end();
+		},
+
+		buildKernel : function(req, res)
+		{
+			var term = pty.spawn("./buildkernel.sh", [ ], {
+			        name: 'xterm-color',
+			        cwd: process.env.PWD,
+			        env: process.env
+			});
+
+			console.log('Build: started ' + term.pid.toString());
+
+			term.on('data', function(data)
+			{
+				console.log('Build-'+term.pid.toString()+': '+data);
+			});
+
+			term.on('exit', function(data)
+			{
+				console.log('Build-'+term.pid.toString()+': finished');
+			});
+
+			res.jsonp(term.pid.toString());
 			res.end();
 		}
 	},

@@ -74,25 +74,35 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 		/* Add a spacer to move board handling to the right */
 		this.addSpacer();
 
+		this.__boardCtrl = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
+
 		this.__pwronBtn = new qx.ui.toolbar.Button(this.tr("Power On"), "icon/22/actions/media-playback-start.png");
 		var pwronCmd = controller.getCommand("pwron");
 		this.__pwronBtn.setCommand(pwronCmd);
 		this.__pwronBtn.setToolTipText(this.tr("Start board power supply. (%1)", pwronCmd.toString()));
-		this.add(this.__pwronBtn);
+		this.__boardCtrl.add(this.__pwronBtn);
 
 		this.__pwroffBtn = new qx.ui.toolbar.Button(this.tr("Power Off"), "icon/22/actions/media-playback-stop.png");
 		var pwroffCmd = controller.getCommand("pwroff");
 		this.__pwroffBtn.setCommand(pwroffCmd);
 		this.__pwroffBtn.setToolTipText(this.tr("Stop board power supply. (%1)", pwroffCmd.toString()));
-		this.add(this.__pwroffBtn);
-
-		this.addSeparator();
+		this.__boardCtrl.add(this.__pwroffBtn);
 
 		this.__resetBtn = new qx.ui.toolbar.Button(this.tr("Reset"), "icon/22/actions/view-refresh.png");
 		var resetCmd = controller.getCommand("reset");
 		this.__resetBtn.setCommand(resetCmd);
 		this.__resetBtn.setToolTipText(this.tr("Reset board. (%1)", resetCmd.toString()));
-		this.add(this.__resetBtn);
+		this.__boardCtrl.add(this.__resetBtn);
+
+		this.add(this.__boardCtrl);
+
+		this.__buildCtrl = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
+		this.__buildBtn = new qx.ui.toolbar.Button(this.tr("Build"), "icon/22/actions/media-playback-start.png");
+		var buildCmd = controller.getCommand("build");
+		this.__buildBtn.setCommand(buildCmd);
+		this.__buildBtn.setToolTipText(this.tr("Start kernel build process. (%1)", buildCmd.toString()));
+		this.__buildCtrl.add(this.__buildBtn);
+		this.add(this.__buildCtrl);
 	},
 
 	properties :
@@ -116,14 +126,19 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 
 		_applyViewmode : function(newMode, oldMode)
 		{
-			if (newMode == "board") {
-				this.__pwronBtn.setEnabled(true);
-				this.__pwroffBtn.setEnabled(true);
-				this.__resetBtn.setEnabled(true);
-			} else {
-				this.__pwronBtn.setEnabled(false);
-				this.__pwroffBtn.setEnabled(false);
-				this.__resetBtn.setEnabled(false);
+			switch (newMode) {
+			case "board":
+				this.__boardCtrl.show();
+				this.__buildCtrl.exclude();
+				break;
+			case "build":
+				this.__boardCtrl.exclude();
+				this.__buildCtrl.show();
+				break;
+			default:
+				this.__boardCtrl.exclude();
+				this.__buildCtrl.exclude();
+				break;
 			}
 		}
 	},
