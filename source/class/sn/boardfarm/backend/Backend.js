@@ -102,6 +102,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			this.__app.get('/status', this.backendStatus);
 			this.__app.get('/boards', this.listBoards);
 			this.__app.get('/boards/:board/power/:command', this.boardPower);
+			this.__app.get('/boards/:board/checkin/:ip', this.boardCheckin);
 			this.__app.get('/terminals', this.createTerminal);
 			this.__app.get('/terminals/:pid/size', this.resizeTerminal);
 			this.__app.ws('/terminals/:pid', this.connectTerminalWebsocket);
@@ -295,6 +296,16 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 					console.log("Unknown power command "+pwrcmd+" for board "+board);
 					break;
 			}
+
+			res.end();
+		},
+
+		boardCheckin : function(req, res)
+		{
+			var board = req.params.board,
+			    ip = req.params.ip;
+
+			console.log("Board "+board+" checked in from ip "+ip);
 
 			res.end();
 		},
