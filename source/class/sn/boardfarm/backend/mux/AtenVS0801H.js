@@ -178,7 +178,7 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 				return;
 
 			console.log("Mux: setting source port to " + n + " on " + this.getIdent());
-			this._serialPortWrite("sw i0"+(n+1));
+			this._serialPortWrite("sw i0"+(parseInt(n)+1));
 		},
 
 		/* State change involves:
