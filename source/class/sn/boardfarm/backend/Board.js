@@ -9,6 +9,7 @@
 
 var boards = require('./Boards');
 var boards = require('./power/Power');
+var boards = require('./mux/Mux');
 
 qx.Class.define("sn.boardfarm.backend.Board",
 {
@@ -81,6 +82,25 @@ qx.Class.define("sn.boardfarm.backend.Board",
 				sourcePort : sourcePort,
 				destPort : destPort
 			});
+		},
+
+		/*
+		 * Select a board
+		 * Walk through the mux-list and turn on all entries
+		 * to focus on this board.
+		 * This is obviously not multi-user capable
+		 */
+		selectBoard : function()
+		{
+			var muxes = sn.boardfarm.backend.mux.Mux.getInstance();
+
+			for (var i = 0; i < this.__muxes.length; i++) {
+				var entry = this.__muxes[i];
+				var mux = muxes.getMux(entry.ident);
+
+				mux.setSourcePort(entry.sourcePort);
+				mux.setDestinationPort(entry.destPort);
+			}
 		}
 	}
 });

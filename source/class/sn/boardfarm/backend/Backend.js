@@ -103,6 +103,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			this.__app.get('/boards', this.listBoards);
 			this.__app.get('/boards/:board/power/:command', this.boardPower);
 			this.__app.get('/boards/:board/checkin/:ip', this.boardCheckin);
+			this.__app.get('/boards/:board/select', this.boardSelect);
 			this.__app.get('/terminals', this.createTerminal);
 			this.__app.get('/terminals/:pid/size', this.resizeTerminal);
 			this.__app.ws('/terminals/:pid', this.connectTerminalWebsocket);
@@ -297,6 +298,15 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 					break;
 			}
 
+			res.end();
+		},
+
+		boardSelect : function(req, res)
+		{
+			var board = req.params.board;
+			var b = sn.boardfarm.backend.Boards.getInstance().getBoard(board);
+
+			b.selectBoard();
 			res.end();
 		},
 

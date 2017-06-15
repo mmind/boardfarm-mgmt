@@ -48,9 +48,23 @@ qx.Class.define("sn.boardfarm.view.desktop.BoardView", {
 	{
 		__xterms : {},
 
+		_selectBoard : function(board)
+		{
+			var req = new qx.io.request.Jsonp();
+			req.setUrl(location.protocol + "//" + location.hostname + ':3000/boards/'+board+"/select");
+			req.addListener("success", function(e) {
+				var req = e.getTarget();
+
+				/* something to do? */
+			}, this);
+
+			req.send();
+		},
 
 		_applyBoard : function(value, old)
 		{
+			this._selectBoard(value);
+
 			if (!this.__xterms[value]) {
 				this.__xterms[value] = new sn.boardfarm.view.desktop.Xterm();
 				this.__xterms[value].setDecorator("main");
