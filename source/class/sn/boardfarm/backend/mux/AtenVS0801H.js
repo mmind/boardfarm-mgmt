@@ -174,7 +174,7 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 		_applySourcePort : function(n, o)
 		{
 			/* initial port setting, nothing to do */
-			if (o == -1 || n == o)
+			if (o == -1)
 				return;
 
 			console.log("Mux: setting source port to " + n + " on " + this.getIdent());
@@ -188,7 +188,7 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 		_applyState : function(n, o)
 		{
 			/* initial state setting, nothing to do */
-			if (o == -1 || n == o)
+			if (o == -1)
 				return;
 
 			console.log("Mux: " + (n ? "enabling" : "disabline" ) + " " + this.getIdent());
