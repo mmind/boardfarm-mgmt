@@ -10,6 +10,7 @@
 require("./Config");
 require('./Fritz');
 require('./Boards');
+require('./mux/Mux');
 require("./power/Power");
 
 var os = require('os');
@@ -111,6 +112,9 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 
 			var boards = sn.boardfarm.backend.Boards.getInstance();
 			boards.addListener("loadComplete", this._startApp, this);
+
+			var muxes = sn.boardfarm.backend.mux.Mux.getInstance();
+			muxes.createMuxes();
 		},
 
 		_startApp : function()

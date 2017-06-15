@@ -50,10 +50,31 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 			obj.muxReadState();
 		},
 
+		createMuxFromConfig : function(mux)
+		{
+			var cfg = sn.boardfarm.backend.Config.getInstance();
+			var m = cfg.getMux(mux);
+			var aten = this.muxFactory(m.type, mux, m.ctrl);
+		},
+
+		createMuxes : function()
+		{
+			var cfg = sn.boardfarm.backend.Config.getInstance();
+			var muxes = cfg.getMuxes();
+
+			/* no muxes, nothing to do */
+			if (!muxes)
+				return;
+
+			muxes = Object.keys(muxes);
+			for (var i = 0; i < muxes.length; i++)
+				this.createMuxFromConfig(muxes[i]);
+		},
+
 		getMux : function(mux)
 		{
 			if (!this.__muxes[mux])
-				throw "Mux " + mux + " not found";
+				this.createMuxFromConfig(mux);
 
 			return this.__muxes[mux];
 		},

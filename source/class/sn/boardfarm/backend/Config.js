@@ -22,6 +22,11 @@ qx.Class.define("sn.boardfarm.backend.Config",
 		listenPort : { init : 3000 },
 		mainSupply : { init : { ident : "fritzdect:087610266671", port : 0 } },
 
+		muxes :
+		{
+			init : null
+		},
+
 		boards :
 		{
 			init : null
@@ -30,6 +35,15 @@ qx.Class.define("sn.boardfarm.backend.Config",
 
 	members :
 	{
+		getMux : function(mux)
+		{
+			var m = this.getMuxes();
+			if (!m || !m[mux])
+				throw "Mux " + mux + " does not exist";
+
+			return m[mux];
+		},
+
 		getBoardMuxes : function(board)
 		{
 			var boards = this.getBoards();
