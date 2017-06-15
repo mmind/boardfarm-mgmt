@@ -20,11 +20,25 @@ qx.Class.define("sn.boardfarm.backend.Config",
 	{
 		listenHost : { init : "0.0.0.0" },
 		listenPort : { init : 3000 },
-		mainSupply : { init : { ident : "fritzdect:087610266671", port : 0 } }
+		mainSupply : { init : { ident : "fritzdect:087610266671", port : 0 } },
+
+		boards :
+		{
+			init : null
+		}
 	},
 
 	members :
 	{
+		getBoardMuxes : function(board)
+		{
+			var boards = this.getBoards();
+
+			if (!boards || !boards[board])
+				return [];
+
+			return boards[board].muxes;
+		}
 	}
 
 });

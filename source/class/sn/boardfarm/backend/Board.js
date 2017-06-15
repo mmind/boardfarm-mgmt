@@ -16,17 +16,25 @@ qx.Class.define("sn.boardfarm.backend.Board",
 
 	construct : function(name)
 	{
-		this.setName(name);
-
-		inst = sn.boardfarm.backend.Boards.getInstance();
+		var inst = sn.boardfarm.backend.Boards.getInstance();
+		var cfg = sn.boardfarm.backend.Config.getInstance();
 		var data = inst.getBoardEntry(name).split(":");
 
+		this.setName(name);
 		this.setArch(data[1]);
 		this.setPort(data[2]);
 		this.setSoc(data[6]);
 
 		this.__power = sn.boardfarm.backend.power.Power.getInstance().portFactory(data[3], data[4], data[5]);
 		this.__power.setBoard(this);
+
+		this.__muxes = [];
+
+		var muxes = cfg.getBoardMuxes(name);
+		for (var i = 0; i < muxes.length; i++) {
+			var mux = muxes[i].split(":");
+			this.addMux(mux[0], mux[1], mux[2]);
+		}
 
 		console.log("Board: added " + this.getSoc() + "-" + name + " on port " + this.__power.getPort()+" of "+ this.__power.portGetAdapter().getAdapterIdent());
 	},
@@ -42,6 +50,7 @@ qx.Class.define("sn.boardfarm.backend.Board",
 	members :
 	{
 		__power : null,
+		__muxes : null,
 
 		powerState : function()
 		{
@@ -63,6 +72,15 @@ qx.Class.define("sn.boardfarm.backend.Board",
 			/* Possibly add board-specific reset actions */
 
 			/* Fallback powercycle */
+		},
+
+		addMux : function(ident, sourcePort, destPort)
+		{
+			this.__muxes.push({
+				ident : ident,
+				sourcePort : sourcePort,
+				destPort : destPort
+			});
 		}
 	}
 });
