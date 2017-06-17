@@ -7,6 +7,8 @@
  *   See the LICENSE file in the project's top-level directory for details.
  */
 
+var mux = require("./AbstractMux");
+
 /*
  * Aten VS0801H is a rackmountable 8-to-1 hdmi mux
  * with a serial interface capable of also switch ports.
@@ -21,15 +23,14 @@
  */
 qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 {
-	extend : qx.core.Object,
+	extend : sn.boardfarm.backend.mux.AbstractMux,
 
-	construct : function(ident, ctrl)
+	construct : function(ident, ctrl, pwr)
 	{
-		var mux = sn.boardfarm.backend.mux.Mux.getInstance();
-
 		console.log("Mux: added Aten VS0801H HDMI Mux at " + ctrl);
-		this.setIdent(ident);
-		this.setCtrl(ctrl);
+		this.base(arguments, ident, ctrl, pwr);
+
+		var mux = sn.boardfarm.backend.mux.Mux.getInstance();
 
 		this.__sPortExpect = [];
 
@@ -60,8 +61,6 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 
 	properties :
 	{
-		ident : {},
-		ctrl : {},
 		sourcePort : { init : -1, apply : "_applySourcePort", event : "sourcePortChanged" },
 		state : { init : -1, apply : "_applyState", event : "stateChanged" },
 	},

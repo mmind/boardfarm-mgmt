@@ -23,13 +23,13 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 
 	members :
 	{
-		muxFactory : function(type, ident, ctrl)
+		muxFactory : function(type, ident, ctrl, pwr)
 		{
 			var pwr;
 
 			switch(type) {
 				case "atenvs0801h":
-					pwr = new sn.boardfarm.backend.mux.AtenVS0801H(ident, ctrl);
+					pwr = new sn.boardfarm.backend.mux.AtenVS0801H(ident, ctrl, pwr);
 					break;
 				default:
 					throw "Undefined mux type " + type + " for " + ident + ": " + ctrl;
@@ -54,7 +54,7 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 		{
 			var cfg = sn.boardfarm.backend.Config.getInstance();
 			var m = cfg.getMux(mux);
-			var aten = this.muxFactory(m.type, mux, m.ctrl);
+			var instance = this.muxFactory(m.type, mux, m.ctrl, m.pwr);
 		},
 
 		createMuxes : function()
