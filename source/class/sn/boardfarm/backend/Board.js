@@ -77,6 +77,9 @@ qx.Class.define("sn.boardfarm.backend.Board",
 
 		addMux : function(ident, sourcePort)
 		{
+			var muxes = sn.boardfarm.backend.mux.Mux.getInstance();
+			var mux = muxes.getMux(ident);
+
 			this.__muxes.push({
 				ident : ident,
 				sourcePort : sourcePort
