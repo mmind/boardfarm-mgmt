@@ -8,6 +8,7 @@
  */
 
 var mux = require("./AtenVS0801H");
+var mux = require("./LKV373a");
 
 /*
  * Mux management singleton
@@ -30,6 +31,9 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 			switch(type) {
 				case "atenvs0801h":
 					pwr = new sn.boardfarm.backend.mux.AtenVS0801H(ident, ctrl, pwr);
+					break;
+				case "lkv373a":
+					pwr = new sn.boardfarm.backend.mux.LKV373a(ident, ctrl, pwr);
 					break;
 				default:
 					throw "Undefined mux type " + type + " for " + ident + ": " + ctrl;
