@@ -23,7 +23,7 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 
 	members :
 	{
-		muxFactory : function(type, ident, ctrl, pwr)
+		muxFactory : function(type, ident, ctrl, pwr, upstream)
 		{
 			var pwr;
 
@@ -34,6 +34,8 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 				default:
 					throw "Undefined mux type " + type + " for " + ident + ": " + ctrl;
 			}
+
+			pwr.setUpstream(upstream);
 
 			return pwr;
 		},
@@ -54,7 +56,7 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 		{
 			var cfg = sn.boardfarm.backend.Config.getInstance();
 			var m = cfg.getMux(mux);
-			var instance = this.muxFactory(m.type, mux, m.ctrl, m.pwr);
+			var instance = this.muxFactory(m.type, mux, m.ctrl, m.pwr, m.upstream);
 		},
 
 		createMuxes : function()

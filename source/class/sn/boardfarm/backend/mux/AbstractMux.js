@@ -18,6 +18,8 @@ qx.Class.define("sn.boardfarm.backend.mux.AbstractMux",
 		this.setIdent(ident);
 		this.setCtrl(ctrl);
 
+		this.__downstream = [];
+
 		if (pwr)
 			this._getPowerSupply(pwr.ident, pwr.port);
 	},
@@ -26,7 +28,8 @@ qx.Class.define("sn.boardfarm.backend.mux.AbstractMux",
 	{
 		ident : {},
 		ctrl : {},
-		power : { init : 0, apply : "_applyPower" }
+		power : { init : 0, apply : "_applyPower" },
+		upstream : { init : null, apply : "_applyUpstream" }
 	},
 
 	members :
@@ -45,6 +48,38 @@ qx.Class.define("sn.boardfarm.backend.mux.AbstractMux",
 		{
 			if (this.__power)
 				this.__power.portSetState(n);
+		},
+
+		__downstream : null,
+		setDownstream : function(port, obj)
+		{
+			this.__downstream[port] = obj;
+		},
+
+		getDownstream : function(port)
+		{
+			if (!this.__downstream)
+				throw "Downstreams not initialized";
+
+			return this.__downstream[port];
+		},
+
+		__upstream : null,
+		_applyUpstream : function(n, o)
+		{
+			var muxes = sn.boardfarm.backend.mux.Mux.getInstance();
+
+			if (!n)
+				return;
+
+			this.__upstream = [];
+			for (var i = 0; i < n.length; i++) {
+				var port = n[i].split(":");
+				this.__upstream[i] = muxes.getMux(port[0]);
+
+				if (this.__upstream[i])
+					this.__upstream[i].setDownstream(port[1], this);
+			}
 		}
 
 	}
