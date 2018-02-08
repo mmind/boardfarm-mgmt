@@ -8,6 +8,7 @@
  */
 
 var pwr = require("./FritzDect");
+var pwr = require("./SainSmart8");
 var pwr = require("./Servo");
 var pwr = require("./Ykush");
 
@@ -25,6 +26,9 @@ qx.Class.define("sn.boardfarm.backend.power.Power",
 			switch(type) {
 				case "fritzdect":
 					pwr = new sn.boardfarm.backend.power.FritzDect(ident, port);
+					break;
+				case "sainsmart8":
+					pwr = new sn.boardfarm.backend.power.SainSmart8Port(ident, port);
 					break;
 				case "servo":
 					pwr = new sn.boardfarm.backend.power.Servo(ident, port);
