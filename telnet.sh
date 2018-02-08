@@ -1,4 +1,12 @@
 #!/bin/bash
 
-echo "/usr/bin/telnet localhost $1"
-bash -c "while /bin/true; do /usr/bin/telnet localhost $1; sleep 2; done"
+IP=`echo $1 | cut -s -d "," -f 1`
+PORT=`echo $1 | cut -s -d "," -f 2`
+
+if [ "x$PORT" = "x" ]; then
+	PORT=$1
+	IP="localhost"
+fi
+
+echo "/usr/bin/telnet $IP $PORT"
+bash -c "while /bin/true; do /usr/bin/telnet $IP $PORT; sleep 2; done"
