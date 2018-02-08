@@ -62,7 +62,9 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			var pwr = sn.boardfarm.backend.power.Power.getInstance();
 
 			pwr.refreshAll();
-			this.__mainSupply.adapterReadPower();
+
+			if (this.__mainSupply)
+				this.__mainSupply.adapterReadPower();
 		},
 
 		_updateMainPower : function(e)
@@ -92,10 +94,13 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			var pwr = sn.boardfarm.backend.power.Power.getInstance();
 
 			/* init mainsupply, so that we can read its data */
-			var supply = cfg.getMainSupply().ident.split(":");
-			supply[2] = cfg.getMainSupply().port;
-			this.__mainSupply = pwr.portFactory(supply[0], supply[1], supply[2]);
-			this.__mainSupply.addListener("adapterPowerChanged", this._updateMainPower, this);
+			var mainSupply = cfg.getMainSupply();
+			if (mainSupply) {
+				var supply = mainSupply.ident.split(":");
+				supply[2] = mainSupply.port;
+				this.__mainSupply = pwr.portFactory(supply[0], supply[1], supply[2]);
+				this.__mainSupply.addListener("adapterPowerChanged", this._updateMainPower, this);
+			}
 
 			this.__app = express();
 			var expressWs = require('express-ws')(this.__app);
