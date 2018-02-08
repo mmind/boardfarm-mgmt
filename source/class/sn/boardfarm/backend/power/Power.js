@@ -33,7 +33,7 @@ qx.Class.define("sn.boardfarm.backend.power.Power",
 					pwr = new sn.boardfarm.backend.power.YkushPort(ident, port);
 					break;
 				default:
-					throw "Undefined power method " + data[3] + " for " + ident + ":" + port;
+					throw "Undefined power method " + type + " for " + ident + ":" + port;
 			}
 
 			return pwr;
