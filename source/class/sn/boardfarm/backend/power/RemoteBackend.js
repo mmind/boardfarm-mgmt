@@ -73,15 +73,20 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 
 			var obj = this;
 			request(options, function(err, res, body) {
-				var status = JSON.parse(body);
-				var keys = obj.__boardNames;
-				var boards = Object.keys(status.boardStates);
+				//FIXME: handle err?
 
-				for (var j = 0; j < boards.length; j++) {
-					for (var i = 0; i < keys.length; i++) {
-						if (keys[i] == boards[j])
-							obj.__states[i] = status.boardStates[boards[j]];
+				try {
+					var status = JSON.parse(body);
+					var keys = obj.__boardNames;
+					var boards = Object.keys(status.boardStates);
+
+					for (var j = 0; j < boards.length; j++) {
+						for (var i = 0; i < keys.length; i++) {
+							if (keys[i] == boards[j])
+								obj.__states[i] = status.boardStates[boards[j]];
+						}
 					}
+				} catch(ex) {
 				}
 			});
 		},
@@ -146,7 +151,13 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 			};
 
 			request(options, function(err, res, body) {
-				//var json = JSON.parse(body);
+				//FIXME: more error handling?
+				if (err) {
+					console.log(err);
+					return;
+				}
+
+				base.__states[port] = newState;
 			});
 		}
 	}
