@@ -61,9 +61,8 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 			var serial = this.getSerial();
 			var base = this;
 
-			/* FIXME: make slave address configurable */
 			var options = {
-				url: 'http://192.168.140.2:3000/status',
+				url: 'http://' + this.getSerial() + ':3000/status',
 				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
@@ -84,7 +83,6 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 							obj.__states[i] = status.boardStates[boards[j]];
 					}
 				}
-
 			});
 		},
 
@@ -137,9 +135,8 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 			var base = this;
 			var cmd = newState ? "on" : "off";
 
-			/* FIXME: make slave address configurable */
 			var options = {
-				url: "http://192.168.140.2:3000/boards/" + this.__boardNames[port] + "/power/"+cmd,
+				url: 'http://' + this.getSerial() + ':3000/boards/' + this.__boardNames[port] + '/power/'+cmd,
 				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
