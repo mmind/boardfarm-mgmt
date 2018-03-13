@@ -9,7 +9,7 @@
 
 var power = require("./Power");
 var ipower = require("./IPowerPort");
-var exec = require('child_process').exec;
+var execSync = require('child_process').execSync;
 
 qx.Class.define("sn.boardfarm.backend.power.AbstractCRelay",
 {
@@ -101,17 +101,10 @@ qx.Class.define("sn.boardfarm.backend.power.AbstractCRelay",
 			var base = this;
 			var cmd = newState ? "ON" : "OFF";
 
-			child = exec("sudo /usr/local/bin/crelay -s " + serial + " " + (parseInt(port) + 1) + " " + cmd, function (error, stdout, stderr)
-			{
-				if (error !== null) {
-					console.log("crelay command returned " + error);
-					return;
-				}
-
-				base.__states[port] = newState;
-				base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
-				console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
-			});
+			error = execSync("sudo /usr/local/bin/crelay -s " + serial + " " + (parseInt(port) + 1) + " " + cmd);
+			base.__states[port] = newState;
+			base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
+			console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
 		}
 	}
 });
