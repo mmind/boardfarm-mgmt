@@ -120,6 +120,29 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 			 return this.__ports.length;
 		},
 
+		adapterShutdown : function()
+		{
+			var child;
+			var serial = this.getSerial();
+			var base = this;
+
+			console.log("Power: send shutdown to remote backend "+this.getSerial());
+
+			var options = {
+				url: 'http://' + this.getSerial() + ':3000/shutdown',
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json',
+					'Accept-Charset': 'utf-8',
+					'User-Agent': 'boardfarm-backend'
+				}
+			};
+
+			var obj = this;
+			request(options, function(err, res, body) {
+			});
+		},
+
 		adapterGetPort : function(port)
 		{
 			if (!this.__ports[port])
@@ -158,6 +181,8 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 				}
 
 				base.__states[port] = newState;
+				base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
+				console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
 			});
 		}
 	}

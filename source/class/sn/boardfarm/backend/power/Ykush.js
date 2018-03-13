@@ -87,6 +87,12 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 			 return 3;
 		},
 
+		adapterShutdown : function()
+		{
+			for (var i = 0; i < this.adapterGetPortNum(); i++)
+				this.adapterSetPortState(i, 0);
+		},
+
 		adapterGetPort : function(port)
 		{
 			if (!this.__ports[port])

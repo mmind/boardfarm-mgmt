@@ -67,6 +67,12 @@ qx.Class.define("sn.boardfarm.backend.power.AbstractCRelay",
 
 		__ports : null,
 
+		adapterShutdown : function()
+		{
+			for (var i = 0; i < this.adapterGetPortNum(); i++)
+				this.adapterSetPortState(i, 0);
+		},
+
 		adapterAddPort : function(port, obj)
 		{
 			if (this.__ports[port])

@@ -103,6 +103,11 @@ qx.Class.define("sn.boardfarm.backend.power.Servo",
 			 return 1;
 		},
 
+		adapterShutdown : function()
+		{
+			this.adapterSetPortState(0, 0);
+		},
+
 		adapterGetPort : function(port)
 		{
 			return this;

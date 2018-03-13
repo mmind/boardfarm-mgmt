@@ -26,6 +26,7 @@ qx.Interface.define("sn.boardfarm.backend.power.IPowerAdapter",
 		adapterReadState : function() {},
 
 		adapterGetPortNum : function() {},
+		adapterShutdown : function() {},
 
 		/*
 		 * Get the power port object attached to this port
