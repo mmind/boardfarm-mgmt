@@ -170,11 +170,12 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		{
 			var cfg = sn.boardfarm.backend.Config.getInstance();
 			var pwr = sn.boardfarm.backend.power.Power.getInstance();
-			var adap = pwr.listAdapters().sort()
+			var adap = pwr.listAdapters().sort();
+			var mainsupply = cfg.getMainSupply();
 			var data = [];
 
 			for (var i = 0; i < adap.length; i++) {
-				if (adap[i] == cfg.getMainSupply().ident)
+				if (mainsupply && adap[i] == mainsupply.ident)
 					continue;
 
 				var t = pwr.getAdapter(adap[i]);
@@ -355,6 +356,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		{
 			var pwr = sn.boardfarm.backend.power.Power.getInstance();
 			var cfg = sn.boardfarm.backend.Config.getInstance();
+			var mainsupply = cfg.getMainSupply();
 			var adaps = pwr.listAdapters();
 
 			console.log("App: shutdown requested");
@@ -362,7 +364,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			for (var i = 0; i < adaps.length; i++)
 			{
 				/* don't turn off main supply :-) */
-				if (adaps[i] == cfg.getMainSupply().ident)
+				if (mainsupply && adaps[i] == mainsupply.ident)
 					continue;
 
 				var adap = pwr.getAdapter(adaps[i]);
