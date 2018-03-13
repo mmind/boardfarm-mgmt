@@ -12,6 +12,7 @@
  *
  * @asset(qx/icon/${qx.icontheme}/22/actions/media-playback-start.png)
  * @asset(qx/icon/${qx.icontheme}/22/actions/media-playback-stop.png)
+ * @asset(qx/icon/${qx.icontheme}/22/actions/system-shutdown.png)
  * @asset(qx/icon/${qx.icontheme}/22/actions/view-refresh.png)
  */
 qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
@@ -28,6 +29,17 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
     reloadBtn.setCommand(reloadCmd);
     reloadBtn.setToolTipText(this.tr("Reload boards. (%1)", reloadCmd.toString()));
     this.add(reloadBtn);*/
+
+		var shutPart = new qx.ui.toolbar.Part;
+		var shutC = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
+
+		this.__shutdownBtn = new qx.ui.toolbar.Button(this.tr("Shutdown"), "icon/22/actions/system-shutdown.png");
+		var shutdownCmd = controller.getCommand("shutdown");
+		this.__shutdownBtn.setCommand(shutdownCmd);
+		this.__shutdownBtn.setToolTipText(this.tr("Shutdown Boardfarm"));
+		shutC.add(this.__shutdownBtn);
+		shutPart.add(shutC);
+		this.add(shutPart);
 
 		var tempPart = new qx.ui.toolbar.Part;
 		var tempC = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -46,6 +58,7 @@ qx.Class.define("sn.boardfarm.view.desktop.ToolBar",
 
 		var powerPart = new qx.ui.toolbar.Part;
 		var powerC = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
 		var t = new qx.ui.basic.Label("Power:");
 		t.set({ alignY : "middle", marginRight : 5 });
 		t.setFont("bold");

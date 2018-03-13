@@ -114,6 +114,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			this.__app.get('/terminals/:pid/size', this.resizeTerminal);
 			this.__app.ws('/terminals/:pid', this.connectTerminalWebsocket);
 			this.__app.get('/build', this.buildKernel);
+			this.__app.get('/shutdown', this.shutdownHost);
 
 			var boards = sn.boardfarm.backend.Boards.getInstance();
 			boards.addListener("loadComplete", this._startApp, this);
@@ -347,6 +348,27 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			});
 
 			res.jsonp(term.pid.toString());
+			res.end();
+		},
+
+		shutdownHost : function(req, res)
+		{
+			var pwr = sn.boardfarm.backend.power.Power.getInstance();
+			var cfg = sn.boardfarm.backend.Config.getInstance();
+			var adaps = pwr.listAdapters();
+
+			console.log("App: shutdown requested");
+
+			for (var i = 0; i < adaps.length; i++)
+			{
+				/* don't turn off main supply :-) */
+				if (adaps[i] == cfg.getMainSupply().ident)
+					continue;
+
+				var adap = pwr.getAdapter(adaps[i]);
+				adap.adapterShutdown();
+			}
+
 			res.end();
 		}
 	},

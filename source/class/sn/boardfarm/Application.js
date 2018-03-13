@@ -283,6 +283,9 @@ qx.Class.define("sn.boardfarm.Application",
 			commands.reset = new qx.ui.command.Command("Control+3");
 			commands.reset.addListener("execute", this.resetBoard, this);
 
+			commands.shutdown = new qx.ui.command.Command("Control+S");
+			commands.shutdown.addListener("execute", this.shutdown, this);
+
 			this.__commands = commands;
 		},
 
@@ -332,6 +335,17 @@ qx.Class.define("sn.boardfarm.Application",
 				return;
 
 			this._boardPower(this.__boardPane.getBoard(), "reset");
+		},
+
+		shutdown : function(e)
+		{
+			var req = new qx.io.request.Jsonp();
+			req.setUrl(location.protocol + "//" + location.hostname + ':3000/shutdown');
+
+			req.addListener("success", function(e)
+			{
+			}, this);
+			req.send();
 		},
 
 		getCommand : function(commandId) {
