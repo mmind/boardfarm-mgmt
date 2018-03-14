@@ -18,6 +18,7 @@ var pty = require('pty.js');
 var express = require('express');
 var readline = require('readline');
 var fs = require('fs');
+var execSync = require('child_process').execSync;
 
 qx.Class.define("sn.boardfarm.backend.Backend",
 {
@@ -372,6 +373,8 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			}
 
 			res.end();
+
+			execSync("sleep 15; sudo /sbin/shutdown -h now");
 		}
 	},
 
