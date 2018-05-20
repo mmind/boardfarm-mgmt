@@ -138,8 +138,10 @@ qx.Class.define("sn.boardfarm.backend.power.RemoteBackend",
 				}
 			};
 
-			var obj = this;
+			var base = this;
 			request(options, function(err, res, body) {
+				if (err)
+					console.log("Power: remotebackend " + base.getAdapterIdent() + " reported " + err);
 			});
 		},
 
