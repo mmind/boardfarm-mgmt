@@ -8,7 +8,7 @@
  */
 
 var fritz = require("../Fritz");
-var smartfritz = require("smartfritz");
+var smartfritz = require('fritzapi');
 var power = require("./Power");
 var ipower = require("./IPowerAdapter");
 var ipower = require("./IPowerPort");
@@ -74,13 +74,17 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			}
 
 			var base = this;
-			var moreParam = { url : "192.168.178.1" };
-			smartfritz.getSwitchPower(fr.getSid(), this.getAin(), function(value){
+			var moreParam = { url : "http://192.168.178.1" };
+			smartfritz.getSwitchPower(fr.getSid(), this.getAin(), moreParam).then(function(value){
 				if (value == "inval")
 					value = 0;
 
-				base.fireDataEvent("adapterPowerChanged", value);
-			}, moreParam);
+				/*
+				 * old smartfritz returned mV, fritzapi returns W
+				 * We'll stay with mV for now.
+				 */
+				base.fireDataEvent("adapterPowerChanged", value * 1000);
+			});
 		},
 
 		__states : null,
@@ -107,12 +111,12 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			}
 
 			var base = this;
-			var moreParam = { url : "192.168.178.1" };
-			smartfritz.getSwitchState(fr.getSid(), this.getAin(), function(state) {
+			var moreParam = { url : "http://192.168.178.1" };
+			smartfritz.getSwitchState(fr.getSid(), this.getAin(), moreParam).then(function(state) {
 				if (state == "inval")
 					state = 0;
 				base.__states = { 0 : parseInt(state) };
-			}, moreParam);
+			});
 		},
 
 		adapterGetPortNum : function()
@@ -157,19 +161,19 @@ qx.Class.define("sn.boardfarm.backend.power.FritzDect",
 			}
 
 			var base = this;
-			var moreParam = { url : "192.168.178.1" };
+			var moreParam = { url : "http://192.168.178.1" };
 			if (newState == 0) {
-				smartfritz.setSwitchOff(fr.getSid(), this.getAin(), function(sid) {
+				smartfritz.setSwitchOff(fr.getSid(), this.getAin(), moreParam).then(function(sid) {
 					base.__states[0] = 0;
 					base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
 					console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
-				}, moreParam);
+				});
 			} else {
-				smartfritz.setSwitchOn(fr.getSid(), this.getAin(), function(sid) {
+				smartfritz.setSwitchOn(fr.getSid(), this.getAin(), moreParam).then(function(sid) {
 					base.__states[0] = 1;
 					base.fireDataEvent("adapterPortStateChanged", { port : port, state : newState });
 					console.log("Power: set port " + parseInt(port) + " of " + base.getAdapterIdent() + " to "+ newState);
-				}, moreParam);
+				});
 			}
 		},
 

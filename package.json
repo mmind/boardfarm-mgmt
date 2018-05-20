@@ -5,7 +5,7 @@
   "repository": "https://github.com/sourcelair/xterm.js",
   "license": "GPL2",
   "devDependencies": {
-    "smartfritz" : "0.1.7",
+    "fritzapi" : "0.10.3",
     "pty.js": "0.3.1",
     "nodemon": "1.10.2",
     "express": "4.13.4",

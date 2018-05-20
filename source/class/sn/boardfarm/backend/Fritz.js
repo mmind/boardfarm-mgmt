@@ -7,7 +7,7 @@
  *   See the LICENSE file in the project's top-level directory for details.
  */
 
-var smartfritz = require("smartfritz");
+var fritz = require('fritzapi');
 
 qx.Class.define("sn.boardfarm.backend.Fritz",
 {
@@ -35,11 +35,13 @@ qx.Class.define("sn.boardfarm.backend.Fritz",
 	{
 		login : function() {
 			var base = this;
-			var moreParam = { url : "192.168.178.1" };
-			smartfritz.getSessionID("smarthome", "smarthome", function(sid)
-			{
+
+			fritz.getSessionID("smarthome", "smarthome", {
+				url: "http://192.168.178.1",
+				strictSSL: false
+			}).then(function(sid) {
 				base.setSid(sid);
-			}, moreParam);
+			});
 		}
 	}
 
