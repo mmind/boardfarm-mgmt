@@ -190,7 +190,7 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 			if (o == -1)
 				return;
 
-			console.log("Mux: " + (n ? "enabling" : "disabline" ) + " " + this.getIdent());
+			console.log("Mux: " + (n ? "enabling" : "disabling" ) + " " + this.getIdent());
 			this._serialPortWrite("sw "+(n ? "on" : "off"));
 		},
 
