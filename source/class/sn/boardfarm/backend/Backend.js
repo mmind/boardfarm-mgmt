@@ -373,9 +373,8 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			}
 
 			res.end();
-
-			exec("sudo /sbin/shutdown -h 1");
-		}
+			setTimeout(sn.boardfarm.backend.Backend.shutdownSystem, 10000);
+		},
 	},
 
 	statics :
@@ -383,5 +382,11 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		__backend : null,
 		__terminals : {},
 		__logs : {},
+
+		shutdownSystem : function()
+		{
+			console.log("App: doing system shutdown");
+			exec("sudo /sbin/shutdown -h now");
+		}
 	}
 });
