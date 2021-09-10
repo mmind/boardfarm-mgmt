@@ -386,7 +386,7 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		shutdownSystem : function()
 		{
 			console.log("App: doing system shutdown");
-			exec("sudo /sbin/shutdown -h now");
+			exec("sudo /sbin/shutdown -H now");
 		}
 	}
 });
