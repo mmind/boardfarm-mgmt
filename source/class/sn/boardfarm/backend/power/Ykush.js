@@ -60,7 +60,7 @@ qx.Class.define("sn.boardfarm.backend.power.Ykush",
 			{
 				if (error !== null) {
 					console.log("ykush command returned " + error);
-					this.__states = { 0 : -1, 1 : -1, 2 : -1 };
+					base.__states = { 0 : -1, 1 : -1, 2 : -1 };
 					return;
 				}
 
