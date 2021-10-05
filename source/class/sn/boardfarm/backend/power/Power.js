@@ -8,6 +8,7 @@
  */
 
 var pwr = require("./FritzDect");
+var pwr = require("./Qemu");
 var pwr = require("./RemoteBackend");
 var pwr = require("./SainSmart8");
 var pwr = require("./Servo");
@@ -27,6 +28,9 @@ qx.Class.define("sn.boardfarm.backend.power.Power",
 			switch(type) {
 				case "fritzdect":
 					pwr = new sn.boardfarm.backend.power.FritzDect(ident, port);
+					break;
+				case "qemu":
+					pwr = new sn.boardfarm.backend.power.QemuPort(ident, port);
 					break;
 				case "remotebackend":
 					pwr = new sn.boardfarm.backend.power.RemoteBackendPort(ident, port);
