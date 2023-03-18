@@ -5,17 +5,17 @@
   "repository": "https://github.com/sourcelair/xterm.js",
   "license": "GPL2",
   "devDependencies": {
-    "fritzapi" : "0.10.3",
+    "fritzapi" : "0.13.0",
     "node-pty": "0.10.1",
-    "nodemon": "1.10.2",
-    "express": "4.13.4",
-    "express-ws": "2.0.0-rc.1",
-    "qooxdoo": "5.0.1",
-    "grunt": "~0.4.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-http-server": "^1.13.0",
+    "nodemon": "2.0.21",
+    "express": "4.18.2",
+    "express-ws": "5.0.2",
+    "qooxdoo": "5.0.3",
+    "grunt": "1.6.1",
+    "grunt-contrib-clean": "2.0.1",
+    "grunt-http-server": "2.1.0",
     "request": "2.83.0",
-    "serialport": "4.0.7"
+    "serialport": "10.5.0"
   },
   "scripts": {
     "start": "nodemon --watch sn --watch boardfarm-backend --exec bash -c 'node boardfarm-backend'"
