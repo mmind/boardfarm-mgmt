@@ -6,7 +6,7 @@
   "license": "GPL2",
   "devDependencies": {
     "fritzapi" : "0.10.3",
-    "pty.js": "0.3.1",
+    "node-pty": "0.10.1",
     "nodemon": "1.10.2",
     "express": "4.13.4",
     "express-ws": "2.0.0-rc.1",

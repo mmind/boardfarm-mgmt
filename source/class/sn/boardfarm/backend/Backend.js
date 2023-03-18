@@ -14,7 +14,7 @@ require('./mux/Mux');
 require("./power/Power");
 
 var os = require('os');
-var pty = require('pty.js');
+var pty = require('node-pty');
 var express = require('express');
 var readline = require('readline');
 var fs = require('fs');
