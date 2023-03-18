@@ -43,10 +43,13 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 		{
 			var base = this;
 			var rs = fs.createReadStream('/sys/class/thermal/thermal_zone0/temp');
-			rs.on('error', function()
+			rs.on('error', function(err)
 			{
 				base.setTemperature(0);
 			});
+
+			if (!rs.readable)
+				return;
 
 			var rl = readline.createInterface({
 				input: rs
@@ -55,6 +58,9 @@ qx.Class.define("sn.boardfarm.backend.Backend",
 			rl.on('line', function (line)
 			{
 				base.setTemperature(parseInt(line));
+			}).on('error', function (err)
+			{
+				base.setTemperature(0);
 			});
 		},
 
