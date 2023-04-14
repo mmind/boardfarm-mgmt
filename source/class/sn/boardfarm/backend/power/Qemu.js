@@ -163,6 +163,16 @@ qx.Class.define("sn.boardfarm.backend.power.QemuPort",
 	{
 		__adapter : null,
 
+		__getCPU : function(arch)
+		{
+			switch(arch) {
+			case "riscv32":
+				return "rv32,Zicbom=true,Zawrs=true,sscofpmf=true";
+			case "riscv64":
+				return "rv64,zbb=true,zbc=true,svpbmt=true,Zicbom=true,Zawrs=true,sscofpmf=true,v=true";
+			}
+		},
+
 		portGetAdapter : function()
 		{
 			return this.__adapter;
@@ -182,12 +192,28 @@ qx.Class.define("sn.boardfarm.backend.power.QemuPort",
 				var base = this;
 				var cmd = "";
 
-				cmd+= "qemu-system-" + board.getArch() + " -M virt -smp 2 -m 1G -display none";
+
+				cmd+= "/usr/local/bin/qemu-system-" + board.getArch() + " -M virt -smp 2 -m 1G -display none";
+//				cmd+= "/usr/bin/qemu-system-" + board.getArch() + " -M virt -smp 2 -m 1G -display none";
+				cmd+= " -cpu " + this.__getCPU(board.getArch());
 				cmd+= " -serial telnet:localhost:" + board.getPort() + ",server,nowait";
 				cmd+= " -kernel /home/devel/nfs/kernel/" + board.getArch() + "/Image";
-				cmd+= " -append \"root=/dev/nfs nfsroot=10.0.2.2:/home/devel/nfs/rootfs-" + board.getName() + " ip=dhcp rw\"";
+				cmd+= " -append \"earlycon=sbi root=/dev/nfs nfsroot=10.0.2.2:/home/devel/nfs/rootfs-" + board.getName() + " ip=dhcp rw\"";
 				cmd+= " -netdev user,id=n1 -device virtio-net-pci,netdev=n1";
 				cmd+= " -name " + this.__adapter.getSerial() + "-"+ this.getPort() +",process=" + this.__adapter.getSerial() + "-vm-" + this.getPort() + " -daemonize";
+
+/*
+				cmd = "";
+				cmd+= "/usr/local/bin/qemu-system-" + board.getArch() + " -M virt -smp 2 -m 1G -display none";
+				cmd+= " -cpu " + this.__getCPU(board.getArch());
+				cmd+= " -serial telnet:localhost:" + board.getPort() + ",server,nowait";
+				cmd+= " -kernel /home/devel/nfs/kernel/" + board.getArch() + "/Image";
+				cmd+= " -append 'root=/dev/vda console=ttyS0'";
+				cmd+= " -drive file=/home/devel/nfs/rootfs-" + board.getName() + ".ext4,format=raw,id=hd0";
+				cmd+= " -device virtio-blk-pci,drive=hd0";
+				cmd+= " -name " + this.__adapter.getSerial() + "-"+ this.getPort() +",process=" + this.__adapter.getSerial() + "-vm-" + this.getPort() + " -daemonize";
+*/
+console.log(cmd);
 
 				child = exec(cmd, function (error, stdout, stderr)
 				{
