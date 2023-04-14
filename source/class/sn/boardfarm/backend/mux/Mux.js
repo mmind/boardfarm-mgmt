@@ -20,11 +20,13 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 
 	construct : function()
 	{
+		this.__muxes = {};
+		this.__sinks = {};
 	},
 
 	members :
 	{
-		muxFactory : function(type, ident, ctrl, pwr, upstream)
+		muxFactory : function(type, ident, ctrl, pwr, upstream, data)
 		{
 			var pwr;
 
@@ -41,10 +43,13 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 
 			pwr.setUpstream(upstream);
 
+			if (data)
+				pwr.set(data);
+
 			return pwr;
 		},
 
-		__muxes : {},
+		__muxes : null,
 
 		addMux : function(mux, obj)
 		{
@@ -56,11 +61,18 @@ qx.Class.define("sn.boardfarm.backend.mux.Mux",
 			obj.muxReadState();
 		},
 
+		__sinks : null,
+
+		addSink : function(mux, obj)
+		{
+			this.__sinks[mux] = obj;
+		},
+
 		createMuxFromConfig : function(mux)
 		{
 			var cfg = sn.boardfarm.backend.Config.getInstance();
 			var m = cfg.getMux(mux);
-			var instance = this.muxFactory(m.type, mux, m.ctrl, m.pwr, m.upstream);
+			var instance = this.muxFactory(m.type, mux, m.ctrl, m.pwr, m.upstream, m.data);
 		},
 
 		createMuxes : function()
