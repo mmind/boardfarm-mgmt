@@ -2,12 +2,12 @@
 Building the web-ui:
 --------------------
 
-Get a copy / clone of qooxdoo (qooxdoo.org), put it somewhere
-like ../qooxdoo and run
+Get a copy / clone of qooxdoo (qooxdoo.org), put it ../qooxdoo and run
 
     ./generate.py build
 
 to create the compiled javascript file.
+
 
 Running the backend:
 --------------------
@@ -15,3 +15,71 @@ Running the backend:
 Run
     npm install
     npm start
+
+
+Current versions:
+-----------------
+
+Currently the backend application is set to qooxdoo 5.0.3, which is the
+most recent version of 5.x.x released through the npm package management
+system.
+
+The qooxdoo checkout should be moved to the branch "branch_5_0_x".
+
+This combination works on Debian bookworm (probably be released on 2023),
+but requires an installation of python2-minimal to work, which needs to
+come from the previous release (bullseye).
+
+So when on bookworm, the source.list should look like
+  deb http://deb.debian.org/debian bookworm main
+  deb-src http://deb.debian.org/debian bookworm main
+
+  # for python2-minimal
+  deb http://deb.debian.org/debian bullseye main
+
+and a
+  apt-get install python2-minimal
+
+will get the required tool for now.
+
+
+Upgrade path and issues:
+------------------------
+
+There are two major versions that were released after 5.x.x .
+
+
+Trying to upgrade to 6.0.1 from the npm repository results in:
+
+# nodejs boardfarm-backend.js
+/home/devel/hstuebner/09_web/boardfarm/node_modules/qooxdoo/qx-oo.js:30475
+    __timeout : qx.event.GlobalError.observeMethod(function()
+                                     ^
+
+TypeError: Cannot read properties of undefined (reading 'observeMethod')
+    at Object.<anonymous> (/home/devel/hstuebner/09_web/boardfarm/node_modules/qooxdoo/qx-oo.js:30475:38)
+    at Module._compile (node:internal/modules/cjs/loader:1218:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1272:10)
+    at Module.load (node:internal/modules/cjs/loader:1081:32)
+    at Module._load (node:internal/modules/cjs/loader:922:12)
+    at Module.require (node:internal/modules/cjs/loader:1105:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (/home/devel/hstuebner/09_web/boardfarm/boardfarm-backend.js:10:10)
+    at Module._compile (node:internal/modules/cjs/loader:1218:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1272:10)
+    at Module.load (node:internal/modules/cjs/loader:1081:32)
+    at Module._load (node:internal/modules/cjs/loader:922:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+    at node:internal/main/run_main_module:23:47
+
+The build system in both the 5.x.x and 6.x.x still uses the python-based
+generator, which in turn has a hard requirement on python2.
+
+
+In version 7.x.x qooxdoo changed their build system in a major way and
+the npm-package no longer provides a pre-built qooxdoo js file but instead
+integrates into their new nodejs-based compiler. The frontend application
+also needs a major upgrade to use that.
+
+So trying to make 6.x.x work is definitly a dead-end and 7.x.x will need
+a bit of time to adapt both sides of the application.
