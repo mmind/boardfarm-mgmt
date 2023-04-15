@@ -35,20 +35,24 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 		this.__sPortExpect = [];
 
 		/* setup serialport instance */
-		var SerialPort = require("serialport");
-		this.__sPort = new SerialPort(ctrl, {
-				baudRate: 19200,
-				parser: SerialPort.parsers.readline('\n')
+		const { SerialPort } = require("serialport");
+		const { ReadlineParser } = require("@serialport/parser-readline");
+		this.__sPort = new SerialPort({
+				path: ctrl,
+				baudRate: 19200
 		});
+
+		this.__sParser = this.__sPort.pipe(new ReadlineParser({ delimiter: '\n' }));
 
 		this.__sPort.on('open',
 			qx.lang.Function.bind(this._serialPortOpen, this));
 		this.__sPort.on('close',
 			qx.lang.Function.bind(this._serialPortClose, this));
-		this.__sPort.on('data',
-			qx.lang.Function.bind(this._serialPortData, this));
 		this.__sPort.on('error',
 			qx.lang.Function.bind(this._serialPortError, this));
+
+		this.__sParser.on('data',
+			qx.lang.Function.bind(this._serialPortData, this));
 
 		mux.addMux(this.getIdent(), this);
 	},
@@ -70,6 +74,7 @@ qx.Class.define("sn.boardfarm.backend.mux.AtenVS0801H",
 		__sPort : null,
 		__sPortReady : false,
 		__sPortExpect : null,
+		__sParser : null,
 
 		_serialPortOpen : function()
 		{
